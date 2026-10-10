@@ -15,7 +15,7 @@ python3 -m http.server 8000
 
 - Experience and skills come from my resume; the figures in the Experience section are resume figures.
 - Research results are copied from the results documents in the linked repositories, including the caveats.
-- Certifications link to their Credly pages and are marked as expired where Credly shows them expired.
+- Certifications link to their Credly pages and Credly shows each badge's current status.
 
 ## Deploy
 
