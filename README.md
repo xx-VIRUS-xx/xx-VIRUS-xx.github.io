@@ -2,7 +2,7 @@
 
 Personal portfolio of Prabhat Saxena: https://xx-virus-xx.github.io/
 
-A plain static site with no build step and no dependencies: `index.html`, `css/styles.css` and `js/main.js`. The hero is a full-viewport looping background video (`media/hero.mp4`, about 1.4 MB, rendered from HTML and GSAP with HyperFrames) that autoplays muted, pauses when the tab is hidden and stays on its poster frame when the visitor prefers reduced motion. Colours follow the visitor's light or dark setting.
+A static site with no build step: `index.html`, `css/styles.css` and `js/main.js`. Motion uses GSAP + ScrollTrigger (cdnjs) and Lenis smooth scrolling (jsDelivr), loaded from CDNs; if they fail to load, or the visitor prefers reduced motion, the page falls back to a plain readable document. The hero is a full-viewport looping video (`media/hero.mp4`, about 2 MB, a 3D shard animation rendered from HTML with HyperFrames). Dark theme only.
 
 ## Run locally
 

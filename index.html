@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prabhat Saxena | AI Engineer</title>
   <meta name="description" content="Prabhat Saxena, Associate Team Lead in AI Engineering. Agentic systems, retrieval infrastructure, local LLM inference and distributed search.">
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="theme-color" content="#05070b">
   <link rel="canonical" href="https://xx-virus-xx.github.io/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta property="og:type" content="website">
@@ -13,6 +13,7 @@
   <meta property="og:description" content="Agentic systems and retrieval infrastructure. Research with the failures included.">
   <meta property="og:url" content="https://xx-virus-xx.github.io/">
   <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="css/styles.css">
   <script type="application/ld+json">
   {
@@ -34,6 +35,10 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <div class="cursor" aria-hidden="true"><i></i></div>
+
   <header class="nav over" id="top">
     <nav class="nav-inner" aria-label="Primary">
       <a class="brand" href="#top">Prabhat Saxena</a>
@@ -54,46 +59,52 @@
         <source src="media/hero.mp4" type="video/mp4">
       </video>
       <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-glow" aria-hidden="true"></div>
       <div class="container hero-inner">
         <p class="eyebrow">Associate Team Lead, AI Engineering</p>
-        <h1 id="hero-title">I build agentic systems and retrieval infrastructure.</h1>
+        <h1 id="hero-title">I build <span class="grad">agentic systems</span> and retrieval infrastructure.</h1>
         <p class="lead">5+ years building production AI systems from scratch: GraphRAG retrieval, local LLM inference and search clusters at scale. I publish my research with the failures included.</p>
         <div class="cta">
-          <a class="btn primary" href="#research">See the research</a>
-          <a class="btn" href="https://github.com/xx-VIRUS-xx">GitHub</a>
-          <a class="btn" href="#contact">Get in touch</a>
+          <a class="btn primary" href="#research" data-magnet>See the research</a>
+          <a class="btn" href="https://github.com/xx-VIRUS-xx" data-magnet>GitHub</a>
+          <a class="btn" href="#contact" data-magnet>Get in touch</a>
         </div>
       </div>
       <a class="scroll-cue" href="#about" aria-label="Scroll to About"><span></span></a>
     </section>
 
-    <section id="about" class="reveal">
+    <div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Agentic AI</span><span>GraphRAG</span><span>Elasticsearch</span><span>Kafka</span><span>Qdrant</span><span>SGLang</span><span>vLLM</span><span>Kubernetes</span><span>FastAPI</span><span>Neo4j</span><span>LangGraph</span><span>Redis</span><span>Agentic AI</span><span>GraphRAG</span><span>Elasticsearch</span><span>Kafka</span><span>Qdrant</span><span>SGLang</span><span>vLLM</span><span>Kubernetes</span><span>FastAPI</span><span>Neo4j</span><span>LangGraph</span><span>Redis</span></div></div>
+
+    <section id="about" class="chapter" style="--c1:#a78bfa;--c2:#60a5fa;--glow:#7c5cff">
       <div class="container">
-        <h2>About</h2>
-        <p>I lead an AI engineering team in India. My work sits where LLM applications meet infrastructure: retrieval and memory for agents, local LLM inference, and the queues, search clusters and services that keep them running in production.</p>
-        <p>On the side I do research and publish it with the failures included. Each experiment has a design doc and a results doc, and negative results stay in.</p>
+        <p class="kicker"><b>01</b> About</p>
+        <p class="statement" data-words>I lead an AI engineering team in India. My work sits where LLM applications meet infrastructure: retrieval and memory for agents, local LLM inference, and the queues, search clusters and services that keep them running in production.</p>
+        <p class="sub-statement" data-reveal>On the side I do research and publish it with the failures included. Each experiment has a design doc and a results doc, and negative results stay in.</p>
         <ul class="interests">
-          <li><strong>Retrieval for code and agents:</strong> BM25, dense, hybrid and graph-based retrieval, and how to measure whether any of it helps</li>
-          <li><strong>Persistent memory for LLM agents:</strong> structured, auditable memory instead of ever-longer context windows</li>
-          <li><strong>LLM infrastructure:</strong> local inference (Ollama, SGLang, vLLM), gateways with caching, fallback and cost tracking</li>
-          <li><strong>Distributed systems:</strong> Elasticsearch, Kafka, Celery, Redis, PostgreSQL, Kubernetes</li>
-          <li><strong>Privacy-minded AI tooling:</strong> PII masking, encrypted storage, audit trails, human-in-the-loop design</li>
+          <li data-reveal><strong>Retrieval for code and agents</strong><span>BM25, dense, hybrid and graph-based retrieval, and how to measure whether any of it helps</span></li>
+          <li data-reveal><strong>Persistent memory for LLM agents</strong><span>Structured, auditable memory instead of ever-longer context windows</span></li>
+          <li data-reveal><strong>LLM infrastructure</strong><span>Local inference (Ollama, SGLang, vLLM), gateways with caching, fallback and cost tracking</span></li>
+          <li data-reveal><strong>Distributed systems</strong><span>Elasticsearch, Kafka, Celery, Redis, PostgreSQL, Kubernetes</span></li>
+          <li data-reveal><strong>Privacy-minded AI tooling</strong><span>PII masking, encrypted storage, audit trails, human-in-the-loop design</span></li>
         </ul>
       </div>
     </section>
 
-    <section id="experience" class="reveal">
+    <section id="experience" class="chapter" style="--c1:#fbbf24;--c2:#fb7185;--glow:#f59e0b">
       <div class="container">
-        <h2>Experience</h2>
+        <p class="kicker"><b>02</b> Experience</p>
+        <h2 class="big">What I've <span class="grad">shipped</span></h2>
         <p class="note">Figures in this section are taken from my resume.</p>
 
         <div class="stats" role="list">
-          <div class="stat" role="listitem"><span class="stat-num">9</span><span class="stat-label">engineers led</span></div>
-          <div class="stat" role="listitem"><span class="stat-num">170B+</span><span class="stat-label">records indexed (84TB)</span></div>
-          <div class="stat" role="listitem"><span class="stat-num">100K+</span><span class="stat-label">cases analysed per day</span></div>
-          <div class="stat" role="listitem"><span class="stat-num">20x</span><span class="stat-label">ingestion throughput scaling</span></div>
+          <div class="stat" role="listitem" data-tilt><span class="stat-num" data-count="9">9</span><span class="stat-label">engineers led</span></div>
+          <div class="stat" role="listitem" data-tilt><span class="stat-num" data-count="170" data-suffix="B+">170B+</span><span class="stat-label">records indexed (84TB)</span></div>
+          <div class="stat" role="listitem" data-tilt><span class="stat-num" data-count="100" data-suffix="K+">100K+</span><span class="stat-label">cases analysed per day</span></div>
+          <div class="stat" role="listitem" data-tilt><span class="stat-num" data-count="20" data-suffix="x">20x</span><span class="stat-label">ingestion throughput scaling</span></div>
         </div>
 
+        <div class="timeline">
+          <div class="timeline-line" aria-hidden="true"><span></span></div>
         <article class="job">
           <header>
             <h3>Associate Team Lead</h3>
@@ -122,8 +133,10 @@
           </ul>
         </article>
 
+        </div>
+
         <h3 class="sub">Education &amp; certifications</h3>
-        <p><strong>B.Tech, Computer Engineering</strong>, Poornima College of Engineering, Jaipur, India · Aug 2017 – Oct 2021</p>
+        <p data-reveal><strong>B.Tech, Computer Engineering</strong>, Poornima College of Engineering, Jaipur, India · Aug 2017 – Oct 2021</p>
         <div class="certs">
           <a class="cert" href="https://www.credly.com/badges/201b1ea0-1d66-4403-87d3-c6dbd2b17826">
             <img src="https://images.credly.com/images/b9feab85-1a43-4f6c-99a5-631b88d5461b/image.png" alt="AWS Certified Developer – Associate badge" width="96" height="96" loading="lazy">
@@ -137,12 +150,13 @@
       </div>
     </section>
 
-    <section id="research" class="reveal">
+    <section id="research" class="chapter" style="--c1:#fb7185;--c2:#e879f9;--glow:#e11d74">
       <div class="container">
-        <h2>Research</h2>
+        <p class="kicker"><b>03</b> Research</p>
+        <h2 class="big">Experiments, <span class="grad">failures included</span></h2>
         <p class="note">Every claim below is backed by a results document in the linked repository, including the parts that did not work.</p>
-        <div class="cards two">
-          <article class="card">
+        <div class="stack">
+          <article class="panel" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/CodegraphTACM">CodeGraph-TACM</a></h3>
             <p class="meta">Topology-Aware Context Manager · retrieval for coding agents</p>
             <p>A resolver that scores files, classes and functions from several graph signals and packs the best ones into a fixed token budget, compared against BM25, dense and hybrid retrieval over six experiments.</p>
@@ -152,7 +166,7 @@
               <li>Negative results are published too: query-side identifier expansion gave no improvement at any tested scale.</li>
             </ul>
           </article>
-          <article class="card">
+          <article class="panel" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/N-Dimensional-Memory">N-Dimensional Memory</a></h3>
             <p class="meta">An external memory for LLM agents</p>
             <p>An LLM extracts entities per turn; a deterministic engine owns identity, time, attribution and what counts as a fact versus a claim, then builds a short question-specific view for the answering model.</p>
@@ -161,46 +175,52 @@
               <li>At equal size it only tied BM25 retrieval, so the project is documented and closed as a negative result.</li>
             </ul>
           </article>
+
         </div>
       </div>
     </section>
 
-    <section id="projects" class="reveal">
-      <div class="container">
-        <h2>Selected projects</h2>
-        <div class="cards three">
-          <article class="card">
+    <section id="projects" class="chapter hs" style="--c1:#38bdf8;--c2:#5eead4;--glow:#0ea5e9">
+      <div class="hs-pin">
+        <div class="container hs-head">
+          <p class="kicker"><b>04</b> Projects</p>
+          <h2 class="big">Selected <span class="grad">projects</span></h2>
+        </div>
+        <div class="hs-track">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/gdpr-llm-proxy">gdpr-llm-proxy</a></h3>
             <p>Proxy that masks personal data before an LLM call leaves the EU and restores it in the response. Presidio detection, a Fernet-encrypted token store with TTL, 55 tests.</p>
           </article>
-          <article class="card">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/euaiact-compliance">euaiact-compliance</a></h3>
             <p>EU AI Act risk-tier classifier: rules decide the tier, retrieved regulation text (Qdrant) justifies it, and every decision is audit-logged.</p>
           </article>
-          <article class="card">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/practice-ops-agent">practice-ops-agent</a></h3>
             <p>Multi-tenant back-office assistant for small clinics: scheduling, billing support and triage, with field-level encryption and AI actions that wait for human approval.</p>
           </article>
-          <article class="card">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/LNSBotz">LNSBotz</a></h3>
             <p>FastAPI platform of AI utilities behind one API: a model gateway with caching, fallback and cost tracking, Celery workers, accounts, plans and payments.</p>
           </article>
-          <article class="card">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/vscars-public">VSCARS</a></h3>
             <p>Beta: a cloud relay plus CLI that lets you use your own dev machine, with terminal, files, git and AI chat, from a phone or any browser. This repository holds the docs and the installer.</p>
           </article>
-          <article class="card">
+          <article class="card" data-tilt>
             <h3><a href="https://github.com/xx-VIRUS-xx/Declutter">Declutter</a></h3>
             <p>Chrome extension that hides page clutter and remembers your choices per site, with zero network calls.</p>
           </article>
+
+          <a class="card more-card" href="https://github.com/xx-VIRUS-xx?tab=repositories" data-magnet><span>All repositories on GitHub</span><small>Each README says plainly what works and what does not.</small></a>
         </div>
-        <p class="more"><a href="https://github.com/xx-VIRUS-xx?tab=repositories">All repositories on GitHub</a>. Each README says plainly what works and what does not.</p>
       </div>
     </section>
 
-    <section id="skills" class="reveal">
+    <section id="skills" class="chapter" style="--c1:#a3e635;--c2:#34d399;--glow:#10b981">
       <div class="container">
-        <h2>Skills</h2>
+        <p class="kicker"><b>05</b> Skills</p>
+        <h2 class="big">The <span class="grad">toolbox</span></h2>
         <dl class="skills">
           <div><dt>AI systems</dt><dd>Agentic AI, advanced RAG, GraphRAG, knowledge graphs, retrieval architectures, persistent memory systems, LangChain, LangGraph, LlamaIndex</dd></div>
           <div><dt>LLM infrastructure</dt><dd>Model serving (Ollama, SGLang, vLLM), local inference pipelines, KV cache optimization, GPU memory management, continuous batching, prefix caching</dd></div>
@@ -211,17 +231,17 @@
       </div>
     </section>
 
-    <section id="contact" class="reveal">
+    <section id="contact" class="chapter contact" style="--c1:#5eead4;--c2:#a78bfa;--glow:#6366f1">
       <div class="container">
-        <h2>Contact</h2>
-        <p>Open to conversations about retrieval, agent memory and LLM infrastructure.</p>
+        <p class="kicker"><b>06</b> Contact</p>
+        <p class="note">Open to conversations about retrieval, agent memory and LLM infrastructure.</p>
+        <a class="mega" href="mailto:pm10182000@gmail.com" data-magnet>Let's talk<span>pm10182000@gmail.com</span></a>
         <ul class="links">
-          <li><a class="btn primary" href="mailto:pm10182000@gmail.com">pm10182000@gmail.com</a></li>
-          <li><a class="btn" href="https://www.linkedin.com/in/prabhat-saxena-154529191">LinkedIn</a></li>
-          <li><a class="btn" href="https://github.com/xx-VIRUS-xx">GitHub</a></li>
-          <li><a class="btn" href="https://x.com/xxVirusxx2801">X</a></li>
-          <li><a class="btn" href="https://leetcode.com/u/xVirusx/">LeetCode</a></li>
-          <li><a class="btn" href="https://www.hackerrank.com/profile/pm10182000">HackerRank</a></li>
+          <li><a class="btn" href="https://www.linkedin.com/in/prabhat-saxena-154529191" data-magnet>LinkedIn</a></li>
+          <li><a class="btn" href="https://github.com/xx-VIRUS-xx" data-magnet>GitHub</a></li>
+          <li><a class="btn" href="https://x.com/xxVirusxx2801" data-magnet>X</a></li>
+          <li><a class="btn" href="https://leetcode.com/u/xVirusx/" data-magnet>LeetCode</a></li>
+          <li><a class="btn" href="https://www.hackerrank.com/profile/pm10182000" data-magnet>HackerRank</a></li>
         </ul>
       </div>
     </section>
@@ -229,10 +249,13 @@
 
   <footer class="footer">
     <div class="container">
-      <p>&copy; <span id="year">2026</span> Prabhat Saxena. Built as a plain static site, <a href="https://github.com/xx-VIRUS-xx/xx-VIRUS-xx.github.io">source on GitHub</a>.</p>
+      <p>&copy; <span id="year">2026</span> Prabhat Saxena. Static site, <a href="https://github.com/xx-VIRUS-xx/xx-VIRUS-xx.github.io">source on GitHub</a>.</p>
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
