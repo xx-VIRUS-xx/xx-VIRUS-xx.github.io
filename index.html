@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prabhat Saxena | AI Engineer</title>
+  <meta name="description" content="Prabhat Saxena, Associate Team Lead in AI Engineering. Agentic systems, retrieval infrastructure, local LLM inference and distributed search.">
+  <meta name="theme-color" content="#0b0f14">
+  <link rel="canonical" href="https://xx-virus-xx.github.io/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Prabhat Saxena | AI Engineer">
+  <meta property="og:description" content="Agentic systems and retrieval infrastructure. Research with the failures included.">
+  <meta property="og:url" content="https://xx-virus-xx.github.io/">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Prabhat Saxena",
+    "jobTitle": "Associate Team Lead, AI Engineering",
+    "url": "https://xx-virus-xx.github.io/",
+    "sameAs": [
+      "https://github.com/xx-VIRUS-xx",
+      "https://www.linkedin.com/in/prabhat-saxena-154529191",
+      "https://x.com/xxVirusxx2801",
+      "https://leetcode.com/u/xVirusx/",
+      "https://www.hackerrank.com/profile/pm10182000"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="top">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="#top">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <canvas id="graph" aria-hidden="true"></canvas>
+      <div class="container hero-inner">
+        <p class="eyebrow">Associate Team Lead, AI Engineering</p>
+        <h1 id="hero-title">I build agentic systems and retrieval infrastructure.</h1>
+        <p class="lead">5+ years building production AI systems from scratch: GraphRAG retrieval, local LLM inference and search clusters at scale. I publish my research with the failures included.</p>
+        <div class="cta">
+          <a class="btn primary" href="#research">See the research</a>
+          <a class="btn" href="https://github.com/xx-VIRUS-xx">GitHub</a>
+          <a class="btn" href="#contact">Get in touch</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="reveal">
+      <div class="container">
+        <h2>About</h2>
+        <p>I lead an AI engineering team in India. My work sits where LLM applications meet infrastructure: retrieval and memory for agents, local LLM inference, and the queues, search clusters and services that keep them running in production.</p>
+        <p>On the side I do research and publish it with the failures included. Each experiment has a design doc and a results doc, and negative results stay in.</p>
+        <ul class="interests">
+          <li><strong>Retrieval for code and agents:</strong> BM25, dense, hybrid and graph-based retrieval, and how to measure whether any of it helps</li>
+          <li><strong>Persistent memory for LLM agents:</strong> structured, auditable memory instead of ever-longer context windows</li>
+          <li><strong>LLM infrastructure:</strong> local inference (Ollama, SGLang, vLLM), gateways with caching, fallback and cost tracking</li>
+          <li><strong>Distributed systems:</strong> Elasticsearch, Kafka, Celery, Redis, PostgreSQL, Kubernetes</li>
+          <li><strong>Privacy-minded AI tooling:</strong> PII masking, encrypted storage, audit trails, human-in-the-loop design</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="experience" class="reveal">
+      <div class="container">
+        <h2>Experience</h2>
+        <p class="note">Figures in this section are taken from my resume.</p>
+
+        <div class="stats" role="list">
+          <div class="stat" role="listitem"><span class="stat-num">9</span><span class="stat-label">engineers led</span></div>
+          <div class="stat" role="listitem"><span class="stat-num">170B+</span><span class="stat-label">records indexed (84TB)</span></div>
+          <div class="stat" role="listitem"><span class="stat-num">100K+</span><span class="stat-label">cases analysed per day</span></div>
+          <div class="stat" role="listitem"><span class="stat-num">20x</span><span class="stat-label">ingestion throughput scaling</span></div>
+        </div>
+
+        <article class="job">
+          <header>
+            <h3>Associate Team Lead</h3>
+            <p class="meta">Izoologic Inc. · Dark Web Intelligence &amp; AI Systems · India · Sept 2023 – Present</p>
+          </header>
+          <ul>
+            <li>Lead a 9-engineer team owning all AI infrastructure and threat-intelligence systems end to end (architecture, execution, production), directly driving 90% of all downstream threat detections and automated client alerting.</li>
+            <li>Architected and operate production Elasticsearch infrastructure indexing 170B+ records across 84TB of intelligence data, with custom analyzers, ILM policies and query optimization for sub-second latency on deep investigations.</li>
+            <li>Engineered a high-throughput AI analysis pipeline processing 100K+ cases/day using local LLM inference (SGLang/Ollama), containerized with Docker and orchestrated through Redis/Celery task queues. Eliminated external API costs, saving $50K–$100K/year, with sub-100ms inference latency per case.</li>
+            <li>Designed an end-to-end GitHub brand-abuse and data-leak detection pipeline for an enterprise client: keyword-driven preprocessing, context assembly (screenshots to S3, code to Qdrant embeddings), a multi-model inference stack (Qwen 7B for vision, Mistral 24B verification, Mistral 7B judge), Kafka topic partitioning, Redis queuing, PostgreSQL state and Kubernetes auto-scaling, reaching over 95% precision on newly leaked repositories.</li>
+            <li>Optimized filtering across 100B+ combo records and 60B+ stealer records, cutting query latency by more than 70% with custom Elasticsearch templates and distributed pre-filtering.</li>
+            <li>Re-engineered distributed Telegram ingestion and scraping workflows for 20x throughput (100–200 to 2K–5K files/day) through Kafka partitioning and worker-pool optimization.</li>
+            <li>Built resilient multi-source monitoring agents for exposed infrastructure, S3 bucket leaks, .onion sites and GitHub repositories, automating dark web threat-surface discovery and client notifications.</li>
+          </ul>
+        </article>
+
+        <article class="job">
+          <header>
+            <h3>Support DevOps Engineer</h3>
+            <p class="meta">BBI Pvt. Ltd. · India · Nov 2021 – Sept 2023</p>
+          </header>
+          <ul>
+            <li>Orchestrated migrations of on-premise monolithic applications to distributed AWS architectures (EC2, HA RDS, S3, CloudFront), reducing deployment friction and enabling multi-region failover.</li>
+            <li>Reduced average deployment times by 60% through targeted CI/CD automation (GitHub Actions, Docker image optimization).</li>
+            <li>Designed proactive monitoring dashboards (Datadog/Prometheus), alerting strategies and operational runbooks; maintained over 99.5% uptime across production infrastructure.</li>
+          </ul>
+        </article>
+
+        <h3 class="sub">Education &amp; certifications</h3>
+        <p><strong>B.Tech, Computer Engineering</strong>, Poornima College of Engineering, Jaipur, India · Aug 2017 – Oct 2021</p>
+        <div class="certs">
+          <a class="cert" href="https://www.credly.com/badges/201b1ea0-1d66-4403-87d3-c6dbd2b17826">
+            <img src="https://images.credly.com/images/b9feab85-1a43-4f6c-99a5-631b88d5461b/image.png" alt="AWS Certified Developer – Associate badge" width="96" height="96" loading="lazy">
+            <span><strong>AWS Certified Developer – Associate</strong><br>Issued May 2022 · <span class="pill">Expired May 2025</span><br><small>Verify on Credly</small></span>
+          </a>
+          <a class="cert" href="https://www.credly.com/badges/e06c12c3-ee70-406e-9f50-0bd8890c21dc">
+            <img src="https://images.credly.com/images/885d38e4-55c0-4c35-b4ed-694e2b26be6c/image.png" alt="AWS Certified Database – Specialty badge" width="96" height="96" loading="lazy">
+            <span><strong>AWS Certified Database – Specialty</strong><br>Issued Oct 2022 · <span class="pill">Expired Oct 2025</span><br><small>Verify on Credly</small></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="research" class="reveal">
+      <div class="container">
+        <h2>Research</h2>
+        <p class="note">Every claim below is backed by a results document in the linked repository, including the parts that did not work.</p>
+        <div class="cards two">
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/CodegraphTACM">CodeGraph-TACM</a></h3>
+            <p class="meta">Topology-Aware Context Manager · retrieval for coding agents</p>
+            <p>A resolver that scores files, classes and functions from several graph signals and packs the best ones into a fixed token budget, compared against BM25, dense and hybrid retrieval over six experiments.</p>
+            <ul>
+              <li>On 47 SWE-bench Lite and Multilingual Python instances, density-gated personalised PageRank reached <strong>Hit@5 36.2% vs 27.7%</strong> for a BM25 + MiniLM hybrid, at no ML inference cost.</li>
+              <li>MRR (0.198 vs 0.192) stays inside the confidence intervals, and the write-up says so.</li>
+              <li>Negative results are published too: query-side identifier expansion gave no improvement at any tested scale.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/N-Dimensional-Memory">N-Dimensional Memory</a></h3>
+            <p class="meta">An external memory for LLM agents</p>
+            <p>An LLM extracts entities per turn; a deterministic engine owns identity, time, attribution and what counts as a fact versus a claim, then builds a short question-specific view for the answering model.</p>
+            <ul>
+              <li>Strongest where retrieval is weakest: speaker attribution (7/8 vs 5/8 for reading the raw text on false-premise questions) and dates (7/7 temporal questions).</li>
+              <li>At equal size it only tied BM25 retrieval, so the project is documented and closed as a negative result.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="reveal">
+      <div class="container">
+        <h2>Selected projects</h2>
+        <div class="cards three">
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/gdpr-llm-proxy">gdpr-llm-proxy</a></h3>
+            <p>Proxy that masks personal data before an LLM call leaves the EU and restores it in the response. Presidio detection, a Fernet-encrypted token store with TTL, 55 tests.</p>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/euaiact-compliance">euaiact-compliance</a></h3>
+            <p>EU AI Act risk-tier classifier: rules decide the tier, retrieved regulation text (Qdrant) justifies it, and every decision is audit-logged.</p>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/practice-ops-agent">practice-ops-agent</a></h3>
+            <p>Multi-tenant back-office assistant for small clinics: scheduling, billing support and triage, with field-level encryption and AI actions that wait for human approval.</p>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/LNSBotz">LNSBotz</a></h3>
+            <p>FastAPI platform of AI utilities behind one API: a model gateway with caching, fallback and cost tracking, Celery workers, accounts, plans and payments.</p>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/vscars-public">VSCARS</a></h3>
+            <p>Beta: a cloud relay plus CLI that lets you use your own dev machine, with terminal, files, git and AI chat, from a phone or any browser. This repository holds the docs and the installer.</p>
+          </article>
+          <article class="card">
+            <h3><a href="https://github.com/xx-VIRUS-xx/Declutter">Declutter</a></h3>
+            <p>Chrome extension that hides page clutter and remembers your choices per site, with zero network calls.</p>
+          </article>
+        </div>
+        <p class="more"><a href="https://github.com/xx-VIRUS-xx?tab=repositories">All repositories on GitHub</a>. Each README says plainly what works and what does not.</p>
+      </div>
+    </section>
+
+    <section id="skills" class="reveal">
+      <div class="container">
+        <h2>Skills</h2>
+        <dl class="skills">
+          <div><dt>AI systems</dt><dd>Agentic AI, advanced RAG, GraphRAG, knowledge graphs, retrieval architectures, persistent memory systems, LangChain, LangGraph, LlamaIndex</dd></div>
+          <div><dt>LLM infrastructure</dt><dd>Model serving (Ollama, SGLang, vLLM), local inference pipelines, KV cache optimization, GPU memory management, continuous batching, prefix caching</dd></div>
+          <div><dt>Search &amp; retrieval</dt><dd>Elasticsearch (multi-TB scale), FAISS, Qdrant, vector, hybrid and semantic search, BM25, HNSW, ANN search</dd></div>
+          <div><dt>Backend &amp; distributed systems</dt><dd>Python, FastAPI, Django, Celery, Redis, Kafka, PostgreSQL, Neo4j, Docker, Kubernetes, async I/O</dd></div>
+          <div><dt>Infra &amp; cloud</dt><dd>AWS, CI/CD, Grafana, OpenTelemetry, distributed architecture, event-driven pipelines</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="contact" class="reveal">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Open to conversations about retrieval, agent memory and LLM infrastructure.</p>
+        <ul class="links">
+          <li><a class="btn primary" href="mailto:pm10182000@gmail.com">pm10182000@gmail.com</a></li>
+          <li><a class="btn" href="https://www.linkedin.com/in/prabhat-saxena-154529191">LinkedIn</a></li>
+          <li><a class="btn" href="https://github.com/xx-VIRUS-xx">GitHub</a></li>
+          <li><a class="btn" href="https://x.com/xxVirusxx2801">X</a></li>
+          <li><a class="btn" href="https://leetcode.com/u/xVirusx/">LeetCode</a></li>
+          <li><a class="btn" href="https://www.hackerrank.com/profile/pm10182000">HackerRank</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; <span id="year">2026</span> Prabhat Saxena. Built as a plain static site, <a href="https://github.com/xx-VIRUS-xx/xx-VIRUS-xx.github.io">source on GitHub</a>.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
