@@ -34,7 +34,7 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="nav" id="top">
+  <header class="nav over" id="top">
     <nav class="nav-inner" aria-label="Primary">
       <a class="brand" href="#top">Prabhat Saxena</a>
       <ul class="nav-links">
@@ -50,7 +50,10 @@
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <canvas id="graph" aria-hidden="true"></canvas>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="media/hero-poster.jpg" aria-hidden="true" tabindex="-1">
+        <source src="media/hero.mp4" type="video/mp4">
+      </video>
+      <div class="hero-shade" aria-hidden="true"></div>
       <div class="container hero-inner">
         <p class="eyebrow">Associate Team Lead, AI Engineering</p>
         <h1 id="hero-title">I build agentic systems and retrieval infrastructure.</h1>
@@ -61,17 +64,7 @@
           <a class="btn" href="#contact">Get in touch</a>
         </div>
       </div>
-    </section>
-
-    <section class="intro reveal" aria-label="Intro clip">
-      <div class="container">
-        <figure>
-          <video controls muted playsinline preload="none" poster="media/intro-poster.png" width="1920" height="1080">
-            <source src="media/intro.mp4" type="video/mp4">
-          </video>
-          <figcaption class="note">A 6-second intro, rendered from HTML and GSAP with HyperFrames. No audio.</figcaption>
-        </figure>
-      </div>
+      <a class="scroll-cue" href="#about" aria-label="Scroll to About"><span></span></a>
     </section>
 
     <section id="about" class="reveal">

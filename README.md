@@ -2,7 +2,7 @@
 
 Personal portfolio of Prabhat Saxena: https://xx-virus-xx.github.io/
 
-A plain static site with no build step and no dependencies: `index.html`, `css/styles.css` and `js/main.js`. The hero is a small canvas animation (a drifting graph that reacts to the pointer); it pauses when off screen and is replaced by a still frame when the visitor prefers reduced motion. Colours follow the visitor's light or dark setting.
+A plain static site with no build step and no dependencies: `index.html`, `css/styles.css` and `js/main.js`. The hero is a full-viewport looping background video (`media/hero.mp4`, about 1.4 MB, rendered from HTML and GSAP with HyperFrames) that autoplays muted, pauses when the tab is hidden and stays on its poster frame when the visitor prefers reduced motion. Colours follow the visitor's light or dark setting.
 
 ## Run locally
 
