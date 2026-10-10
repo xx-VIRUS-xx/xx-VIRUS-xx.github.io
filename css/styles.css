@@ -84,6 +84,12 @@ h1 { margin: 0 0 18px; font-size: clamp(2.1rem, 5.4vw, 3.6rem); line-height: 1.1
 .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
+/* Intro clip */
+.intro { padding: 56px 0; }
+.intro figure { margin: 0; }
+.intro video { width: 100%; height: auto; display: block; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); }
+.intro figcaption { margin-top: 10px; }
+
 /* Sections */
 section { padding: 84px 0; border-bottom: 1px solid var(--border); }
 .hero + section { padding-top: 72px; }
