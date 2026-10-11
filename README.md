@@ -6,7 +6,7 @@ A static site with no build step: `index.html`, `css/styles.css` and `js/main.js
 
 ## Landing intro
 
-On the first visit per browser session the home page plays `media/intro.webm` (with an `intro.mp4` fallback, about 0.4 MB, 6 seconds, trimmed and recompressed from a screen recording) under a full-screen overlay. It has a Skip button, closes on Escape, on a click of the real "Enter" hit-area laid over the video's last frame, or automatically 2 seconds after the end. It never shows with reduced motion, and a watchdog closes it if the video cannot start. `/?intro` replays it.
+On the first visit per browser session the home page plays `media/intro.webm` (with an `intro.mp4` fallback, about 0.4 MB, 6 seconds, trimmed and recompressed from a screen recording) under a full-screen overlay. It has a Skip button, closes on Escape, on a click of the real "Enter" hit-area laid over the video's last frame, or automatically 1 second after the end. It never shows with reduced motion, and a watchdog closes it if the video cannot start. `/?intro` replays it.
 
 ## Blog
 

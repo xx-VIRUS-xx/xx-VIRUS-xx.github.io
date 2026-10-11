@@ -30,7 +30,7 @@
     ready = true;
     enter.disabled = false;
     clearTimeout(auto);
-    auto = setTimeout(finish, 2000);
+    auto = setTimeout(finish, 1000);
   }
 
   skip.addEventListener('click', finish);
