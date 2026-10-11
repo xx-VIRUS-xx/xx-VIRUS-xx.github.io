@@ -30,7 +30,7 @@
     ready = true;
     enter.disabled = false;
     clearTimeout(auto);
-    auto = setTimeout(finish, 4000);
+    auto = setTimeout(finish, 2000);
   }
 
   skip.addEventListener('click', finish);
@@ -44,7 +44,7 @@
   watchdog = setTimeout(finish, 4500);
   video.addEventListener('playing', function () { clearTimeout(watchdog); }, { once: true });
   video.addEventListener('error', finish);
-  video.addEventListener('timeupdate', function () { if (video.currentTime >= 12.5) arm(); });
+  video.addEventListener('timeupdate', function () { if (video.currentTime >= 6.0) arm(); });
   video.addEventListener('ended', arm);
 
   var p = video.play();
