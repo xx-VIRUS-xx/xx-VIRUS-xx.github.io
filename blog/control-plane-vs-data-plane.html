@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control plane vs data plane: the first split in a video platform | Prabhat Saxena</title>
+  <meta name="description" content="Why the server that decides who can watch must never be the server that delivers the video.">
+  <meta name="theme-color" content="#07100d">
+  <link rel="canonical" href="https://xx-virus-xx.github.io/blog/control-plane-vs-data-plane.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Control plane vs data plane: the first split in a video platform | Prabhat Saxena">
+  <meta property="og:description" content="Why the server that decides who can watch must never be the server that delivers the video.">
+  <meta property="og:url" content="https://xx-virus-xx.github.io/blog/control-plane-vs-data-plane.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Control plane vs data plane: the first split in a video platform","author":{"@type":"Person","name":"Prabhat Saxena","url":"https://xx-virus-xx.github.io/"},"datePublished":"2026-10","url":"https://xx-virus-xx.github.io/blog/control-plane-vs-data-plane.html"}</script>
+</head>
+<body style="--c1:#38bdf8;--c2:#5eead4;--glow-a:#38bdf8;--glow-b:#5eead4">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <header class="nav over solid">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="../">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../#projects">Projects</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="post">
+    <div class="post-wrap">
+      <a class="back" href="./">&larr; All posts</a>
+      <ul class="tags"><li>System design</li><li>Streaming</li><li>Architecture</li></ul>
+      <h1>Control plane vs data plane: the first split in a video platform</h1>
+      <p class="dek">Start from the naive app, let it break, and find the one architectural decision that everything else depends on.</p>
+      <p class="byline">Prabhat Saxena · October 2026 · 3 min read</p>
+      <article class="prose">
+<p>These are first-principles notes on how a large video platform fits together, written the way I work through a design: start with the simplest version and keep asking what breaks first. They describe a generic architecture, not any real company's system.</p>
+
+<h2>Requirements</h2>
+<ul>
+<li>Authenticated users browse a catalog, search, and play on-demand and live video.</li>
+<li>Subscriptions and device rules decide who may watch what.</li>
+<li>Playback stays smooth for a very large number of concurrent viewers.</li>
+</ul>
+
+<h2>Version 0: one server, one database</h2>
+<div class="formula">User → API server → Database          (metadata, login)
+User → GET /movie.mp4 → API server → Storage     (video)</div>
+<p>For a toy project this is fine: login works, metadata works, playback works.</p>
+
+<h2>Where it breaks</h2>
+<p>Put 100,000 users on it. Every viewer now pulls video bytes <em>through</em> the application server. The component meant to answer "is this user allowed to watch this?" has become, by accident, a video delivery network. It was never designed for that job, and it becomes slow, expensive and fragile.</p>
+<p>The mistake is mixing two jobs with different scaling characteristics:</p>
+<ol>
+<li>Deciding who can watch what: small, fast, logic-heavy.</li>
+<li>Moving gigabytes to millions of screens: huge, simple, bandwidth-heavy.</li>
+</ol>
+
+<h2>The split</h2>
+<figure class="diagram"><svg viewBox="0 0 960 480" role="img" aria-label="Control plane versus data plane in a video platform" xmlns="http://www.w3.org/2000/svg"><title>Control plane versus data plane in a video platform</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="380" y="14" width="200" height="56" rx="10" class="d-box hot"/><text x="480.0" y="47.0" text-anchor="middle" class="d-label">Client / player</text><rect x="30" y="130" width="420" height="300" rx="16" class="d-group"/><text x="46" y="154" class="d-glabel">CONTROL PLANE · decides and describes</text><rect x="510" y="130" width="420" height="300" rx="16" class="d-group"/><text x="526" y="154" class="d-glabel">DATA PLANE · moves the bytes</text><rect x="55" y="175" width="150" height="56" rx="10" class="d-box"/><text x="130.0" y="208.0" text-anchor="middle" class="d-label">Load balancer</text><rect x="250" y="175" width="170" height="56" rx="10" class="d-box"/><text x="335.0" y="208.0" text-anchor="middle" class="d-label">Stateless API servers</text><rect x="55" y="330" width="150" height="60" rx="10" class="d-box"/><text x="130.0" y="357.0" text-anchor="middle" class="d-label">Redis</text><text x="130.0" y="376.0" text-anchor="middle" class="d-sub">hot reads</text><rect x="250" y="330" width="170" height="60" rx="10" class="d-box store"/><text x="335.0" y="357.0" text-anchor="middle" class="d-label">Database</text><text x="335.0" y="376.0" text-anchor="middle" class="d-sub">metadata · entitlements</text><path d="M205 203 L250 203" class="d-arrow" marker-end="url(#ar)"/><path d="M300 231 L300 280 L130 280 L130 330" class="d-arrow" marker-end="url(#ar)"/><path d="M380 231 L380 330" class="d-arrow" marker-end="url(#ar)"/><path d="M380 42 L130 42 L130 175" class="d-arrow" marker-end="url(#ar)"/><text x="250" y="34" text-anchor="middle" class="d-note">login · browse · playback request</text><path d="M340 175 L340 112 L460 112 L460 70" class="d-arrow dashed alt" marker-end="url(#ar2)"/><text x="400" y="104" text-anchor="middle" class="d-note">permission + manifest URL</text><rect x="535" y="330" width="160" height="60" rx="10" class="d-box"/><text x="615.0" y="357.0" text-anchor="middle" class="d-label">Transcode workers</text><text x="615.0" y="376.0" text-anchor="middle" class="d-sub">background jobs</text><rect x="740" y="330" width="170" height="60" rx="10" class="d-box store"/><text x="825.0" y="357.0" text-anchor="middle" class="d-label">Object storage</text><text x="825.0" y="376.0" text-anchor="middle" class="d-sub">segments + manifests</text><rect x="740" y="180" width="170" height="60" rx="10" class="d-box hot"/><text x="825.0" y="207.0" text-anchor="middle" class="d-label">CDN edge cache</text><text x="825.0" y="226.0" text-anchor="middle" class="d-sub">near the viewer</text><path d="M695 360 L740 360" class="d-arrow" marker-end="url(#ar)"/><path d="M825 330 L825 240" class="d-arrow" marker-end="url(#ar)"/><text x="880" y="290" text-anchor="middle" class="d-note">cache miss only</text><path d="M825 180 L825 42 L580 42" class="d-arrow" marker-end="url(#ar)"/><text x="700" y="34" text-anchor="middle" class="d-note">video segments</text><text x="480" y="460" text-anchor="middle" class="d-note strong">The API grants permission. The CDN delivers the video. No video byte passes through the API.</text></svg><figcaption>Two planes with different growth curves: control traffic is small and logic-heavy; data traffic is where almost all bytes and cost live.</figcaption></figure>
+<div class="table-wrap"><table>
+<tr><th></th><th>Control plane</th><th>Data plane</th></tr>
+<tr><td><strong>Does</strong></td><td>Login, profile, catalog, search, subscriptions, watch history, recommendations, playback authorization</td><td>Movies, episodes, live streams, video segments, audio, subtitles</td></tr>
+<tr><td><strong>Scales with</strong></td><td>Roughly linear in user count; cheap per request</td><td>Bytes delivered; this is where nearly all the cost lives</td></tr>
+<tr><td><strong>Built from</strong></td><td>Load balancer, stateless API servers, Redis, database</td><td>Transcode workers, object storage, CDN</td></tr>
+<tr><td><strong>Scaling tool</strong></td><td>More stateless servers and caches</td><td>Edge caching and origin protection</td></tr>
+</table></div>
+
+<h2>Playback flow</h2>
+<ol>
+<li>The client authenticates, browses the catalog and picks a title.</li>
+<li>It requests playback authorization: subscription, device and region rules are checked.</li>
+<li>The API returns playback information, including where the manifest lives.</li>
+<li>The player fetches the manifest, then requests segments from the CDN, one after another.</li>
+</ol>
+<p>To stop unpaid downloads, the data plane relies on entitlement checks, signed URLs, short-lived tokens and DRM. The control plane issues the permission; the data plane enforces it.</p>
+
+<h2>Design rules that follow</h2>
+<ul>
+<li><strong>Separate control traffic from media traffic.</strong> The API never sees a video byte.</li>
+<li><strong>Keep servers stateless.</strong> State lives in caches, databases and object storage, so servers can be added freely.</li>
+<li><strong>Move slow work off the request path.</strong> Transcoding is a background job, not part of an upload request.</li>
+<li><strong>Protect the origin with a CDN.</strong> The origin should see cache misses only.</li>
+<li><strong>Do not split into microservices too early.</strong> Separate responsibilities in code first; split deployment when the scaling profiles actually diverge.</li>
+</ul>
+
+<h2>Why the split matters more than it looks</h2>
+<p>It is tempting to read this as "just use a CDN". The deeper point is that the two planes have different growth curves and failure behaviour. Once they are separated, the rest of the design places itself: transcoding, segmentation and cache invalidation live in the data plane; authorization, catalog and recommendations live in the control plane. Most hard problems in streaming reduce to scaling one plane without disturbing the simplicity of the other.</p>
+
+<div class="callout"><p><strong>Limits of these notes.</strong> They are conceptual: there is no running code, no benchmark and no capacity measurement behind them, so any sizing figure is an exercise rather than a result.</p></div>
+</article>
+      <nav class="post-nav" aria-label="More posts"><a href="leak-detection-pipeline.html"><small>Previous</small>Detecting leaked code and brand abuse at scale</a><a class="next" href="one-million-viewers-four-workloads.html"><small>Next</small>“One million viewers” is four workloads</a></nav>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general system-design material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <script src="../js/blog.js" defer></script>
+</body>
+</html>

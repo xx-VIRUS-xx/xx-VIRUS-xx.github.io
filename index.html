@@ -48,6 +48,7 @@
         <li><a href="#research">Research</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#skills">Skills</a></li>
+        <li><a href="blog/">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -217,9 +218,40 @@
       </div>
     </section>
 
+    <section id="writing" class="chapter" style="--c1:#f1e6a4;--c2:#ff6aa2;--glow:#ff6aa2">
+      <div class="container">
+        <p class="kicker"><b>05</b> Writing</p>
+        <h2 class="big">System design, <span class="grad">written down</span></h2>
+        <p class="note">Architecture write-ups with diagrams: requirements, the system, and what breaks.</p>
+        <div class="writing-grid">
+          <a class="card write-card" href="blog/leak-detection-pipeline.html" data-tilt style="--c1:#a78bfa;--c2:#60a5fa">
+            <p class="meta">System design · 5 min read</p>
+            <h3>Detecting leaked code and brand abuse at scale</h3>
+            <p>How to find leaked source code, credentials and brand impersonation on public code platforms without running GPU inference on everything.</p>
+          </a>
+          <a class="card write-card" href="blog/control-plane-vs-data-plane.html" data-tilt style="--c1:#38bdf8;--c2:#5eead4">
+            <p class="meta">System design · 3 min read</p>
+            <h3>Control plane vs data plane: the first split in a video platform</h3>
+            <p>Why the server that decides who can watch must never be the server that delivers the video.</p>
+          </a>
+          <a class="card write-card" href="blog/one-million-viewers-four-workloads.html" data-tilt style="--c1:#fbbf24;--c2:#fb7185">
+            <p class="meta">System design · 3 min read</p>
+            <h3>“One million viewers” is four workloads</h3>
+            <p>Control, playback, events and processing grow differently. Scaling starts by asking which one is growing.</p>
+          </a>
+          <a class="card write-card" href="blog/deterministic-agent-memory-math.html" data-tilt style="--c1:#fb7185;--c2:#e879f9">
+            <p class="meta">Agent memory · 8 min read</p>
+            <h3>The math behind a deterministic agent memory</h3>
+            <p>How an external memory for LLM agents finds connections, orders history in time and picks what to show the model, using only arithmetic.</p>
+          </a>
+        </div>
+        <p class="more-link"><a class="btn" href="blog/" data-magnet>All posts</a></p>
+      </div>
+    </section>
+
     <section id="skills" class="chapter" style="--c1:#a3e635;--c2:#34d399;--glow:#10b981">
       <div class="container">
-        <p class="kicker"><b>05</b> Skills</p>
+        <p class="kicker"><b>06</b> Skills</p>
         <h2 class="big">The <span class="grad">toolbox</span></h2>
         <dl class="skills">
           <div><dt>AI systems</dt><dd>Agentic AI, advanced RAG, GraphRAG, knowledge graphs, retrieval architectures, persistent memory systems, LangChain, LangGraph, LlamaIndex</dd></div>
@@ -233,7 +265,7 @@
 
     <section id="contact" class="chapter contact" style="--c1:#5eead4;--c2:#a78bfa;--glow:#6366f1">
       <div class="container">
-        <p class="kicker"><b>06</b> Contact</p>
+        <p class="kicker"><b>07</b> Contact</p>
         <p class="note">Open to conversations about retrieval, agent memory and LLM infrastructure.</p>
         <a class="mega" href="mailto:pm10182000@gmail.com" data-magnet>Let's talk<span>pm10182000@gmail.com</span></a>
         <ul class="links">

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detecting leaked code and brand abuse at scale | Prabhat Saxena</title>
+  <meta name="description" content="How to find leaked source code, credentials and brand impersonation on public code platforms without running GPU inference on everything.">
+  <meta name="theme-color" content="#07100d">
+  <link rel="canonical" href="https://xx-virus-xx.github.io/blog/leak-detection-pipeline.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Detecting leaked code and brand abuse at scale | Prabhat Saxena">
+  <meta property="og:description" content="How to find leaked source code, credentials and brand impersonation on public code platforms without running GPU inference on everything.">
+  <meta property="og:url" content="https://xx-virus-xx.github.io/blog/leak-detection-pipeline.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Detecting leaked code and brand abuse at scale","author":{"@type":"Person","name":"Prabhat Saxena","url":"https://xx-virus-xx.github.io/"},"datePublished":"2026-10","url":"https://xx-virus-xx.github.io/blog/leak-detection-pipeline.html"}</script>
+</head>
+<body style="--c1:#a78bfa;--c2:#60a5fa;--glow-a:#a78bfa;--glow-b:#60a5fa">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <header class="nav over solid">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="../">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../#projects">Projects</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="post">
+    <div class="post-wrap">
+      <a class="back" href="./">&larr; All posts</a>
+      <ul class="tags"><li>System design</li><li>LLM infrastructure</li><li>Distributed systems</li></ul>
+      <h1>Detecting leaked code and brand abuse at scale</h1>
+      <p class="dek">A staged verification pipeline: cheap filters first, expensive models last, and every verdict traceable to evidence.</p>
+      <p class="byline">Prabhat Saxena · October 2026 · 5 min read</p>
+      <article class="prose">
+<p>Public code-hosting platforms see a continuous stream of new repositories and commits. A small fraction of them expose proprietary source code, credentials, infrastructure details or brand assets, or impersonate a company. This post is the architecture I use when I design a system that finds those cases automatically and sends a verified alert to the affected organisation.</p>
+
+<h2>The problem</h2>
+<p>Manual triage cannot keep up. The input is high-volume and almost entirely irrelevant, and analysts who review noisy alerts stop trusting them. The system has to be selective before it is smart.</p>
+
+<h2>Requirements</h2>
+<h3>Functional</h3>
+<ul>
+<li>Continuously discover new public repositories and repository activity.</li>
+<li>Decide whether an item leaks code, credentials or infrastructure information, or impersonates a brand.</li>
+<li>Produce an alert that carries its evidence, and never alert twice on the same finding.</li>
+</ul>
+<h3>Non-functional</h3>
+<ul>
+<li><strong>High precision.</strong> False positives are what destroy trust in an alerting system.</li>
+<li><strong>Elastic.</strong> Input is bursty; capacity must follow it.</li>
+<li><strong>Bounded cost.</strong> GPU inference cannot run on every item that arrives.</li>
+<li><strong>Auditable.</strong> Every verdict must trace back to the evidence behind it.</li>
+<li><strong>Independently scalable stages,</strong> so a slow model never stalls discovery.</li>
+</ul>
+
+<h2>The core idea: shrink the search space before spending compute</h2>
+<p>Treat the pipeline as a funnel. Each stage answers a more expensive question than the one before it, and only items that survive reach the next stage.</p>
+<div class="table-wrap"><table>
+<tr><th>Stage</th><th>Question it answers</th><th>Cost per item</th></tr>
+<tr><td>Keyword prefilter</td><td>Could this possibly be relevant?</td><td>Very low</td></tr>
+<tr><td>Context assembly</td><td>What evidence do we have for it?</td><td>Medium (fetch, embed, screenshot)</td></tr>
+<tr><td>Verification models</td><td>Does the evidence show a leak or abuse?</td><td>High (model inference)</td></tr>
+<tr><td>Judge</td><td>Do the independent verdicts agree?</td><td>Low (reads structured output only)</td></tr>
+</table></div>
+
+<h2>Architecture</h2>
+<figure class="diagram"><svg viewBox="0 0 960 610" role="img" aria-label="Staged detection pipeline: discovery, filtering, context assembly, queues, three-model verification, state, alerting" xmlns="http://www.w3.org/2000/svg"><title>Staged detection pipeline: discovery, filtering, context assembly, queues, three-model verification, state, alerting</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="30" y="30" width="200" height="64" rx="10" class="d-box"/><text x="130.0" y="59.0" text-anchor="middle" class="d-label">Discovery agents</text><text x="130.0" y="78.0" text-anchor="middle" class="d-sub">poll + stream public activity</text><rect x="290" y="30" width="200" height="64" rx="10" class="d-box"/><text x="390.0" y="59.0" text-anchor="middle" class="d-label">Keyword prefilter</text><text x="390.0" y="78.0" text-anchor="middle" class="d-sub">prune irrelevant items early</text><rect x="550" y="30" width="200" height="64" rx="10" class="d-box hot"/><text x="650.0" y="59.0" text-anchor="middle" class="d-label">Context assembly</text><text x="650.0" y="78.0" text-anchor="middle" class="d-sub">evidence bundle per repo</text><rect x="800" y="10" width="140" height="50" rx="10" class="d-box store"/><text x="870.0" y="32.0" text-anchor="middle" class="d-label">Vector index</text><text x="870.0" y="51.0" text-anchor="middle" class="d-sub">code embeddings</text><rect x="800" y="70" width="140" height="50" rx="10" class="d-box store"/><text x="870.0" y="92.0" text-anchor="middle" class="d-label">Object store</text><text x="870.0" y="111.0" text-anchor="middle" class="d-sub">screenshots</text><path d="M230 62 L290 62" class="d-arrow" marker-end="url(#ar)"/><path d="M490 62 L550 62" class="d-arrow" marker-end="url(#ar)"/><path d="M750 52 L800 36" class="d-arrow" marker-end="url(#ar)"/><path d="M750 72 L800 96" class="d-arrow" marker-end="url(#ar)"/><rect x="30" y="190" width="240" height="64" rx="10" class="d-box"/><text x="150.0" y="219.0" text-anchor="middle" class="d-label">Kafka, partitioned</text><text x="150.0" y="238.0" text-anchor="middle" class="d-sub">absorb spikes · decouple ingest</text><rect x="330" y="190" width="240" height="64" rx="10" class="d-box"/><text x="450.0" y="219.0" text-anchor="middle" class="d-label">Redis job queues</text><text x="450.0" y="238.0" text-anchor="middle" class="d-sub">low-latency handoff</text><rect x="630" y="190" width="300" height="64" rx="10" class="d-box hot"/><text x="780.0" y="219.0" text-anchor="middle" class="d-label">Worker pods on Kubernetes</text><text x="780.0" y="238.0" text-anchor="middle" class="d-sub">HPA scales on queue depth + lag</text><path d="M650 94 L650 146 L150 146 L150 190" class="d-arrow" marker-end="url(#ar)"/><text x="400" y="138" text-anchor="middle" class="d-note">evidence references + metadata</text><path d="M270 222 L330 222" class="d-arrow" marker-end="url(#ar)"/><path d="M570 222 L630 222" class="d-arrow" marker-end="url(#ar)"/><rect x="30" y="316" width="250" height="60" rx="10" class="d-box"/><text x="155.0" y="343.0" text-anchor="middle" class="d-label">Vision model (7B)</text><text x="155.0" y="362.0" text-anchor="middle" class="d-sub">logo misuse · UI clones · tokens in images</text><rect x="30" y="396" width="250" height="60" rx="10" class="d-box"/><text x="155.0" y="423.0" text-anchor="middle" class="d-label">Code model (24B)</text><text x="155.0" y="442.0" text-anchor="middle" class="d-sub">secrets · endpoints · proprietary logic</text><rect x="360" y="346" width="230" height="70" rx="10" class="d-box hot"/><text x="475.0" y="378.0" text-anchor="middle" class="d-label">Judge model (7B)</text><text x="475.0" y="397.0" text-anchor="middle" class="d-sub">cross-evidence verdict + confidence</text><rect x="690" y="346" width="240" height="70" rx="10" class="d-box"/><text x="810.0" y="378.0" text-anchor="middle" class="d-label">Client alert</text><text x="810.0" y="397.0" text-anchor="middle" class="d-sub">verdict + evidence attached</text><path d="M780 254 L780 292 L155 292 L155 316" class="d-arrow" marker-end="url(#ar)"/><path d="M155 292 L12 292 L12 426 L30 426" class="d-arrow" marker-end="url(#ar)"/><path d="M280 346 L360 371" class="d-arrow" marker-end="url(#ar)"/><path d="M280 426 L360 391" class="d-arrow" marker-end="url(#ar)"/><path d="M590 381 L690 381" class="d-arrow" marker-end="url(#ar)"/><rect x="360" y="510" width="230" height="70" rx="10" class="d-box store"/><text x="475.0" y="542.0" text-anchor="middle" class="d-label">PostgreSQL</text><text x="475.0" y="561.0" text-anchor="middle" class="d-sub">incident state · audit trail · dedupe key</text><path d="M475 416 L475 510" class="d-arrow" marker-end="url(#ar)"/><text x="530" y="468" text-anchor="middle" class="d-note">record verdict</text><path d="M590 545 L810 545 L810 416" class="d-arrow dashed alt" marker-end="url(#ar2)"/><text x="700" y="537" text-anchor="middle" class="d-note">suppress duplicates</text></svg><figcaption>Each stage is its own scaling unit. The expensive models only see candidates that survive filtering and context assembly.</figcaption></figure>
+
+<h2>Component walk-through</h2>
+<h3>1. Discovery and prefilter</h3>
+<p>Monitoring agents poll and stream public activity and emit raw events. They hold no business logic, so they can be restarted or replaced freely. The keyword prefilter then discards most of the stream before anything expensive runs. It is deliberately crude: its only job is to be cheap and to protect everything downstream.</p>
+
+<h3>2. Multimodal context assembly</h3>
+<p>Text alone cannot reliably say whether a repository impersonates a brand. A README can claim anything; a screenshot of the rendered project shows what a visitor would actually see. So each candidate gets an evidence bundle with two parts:</p>
+<ul>
+<li><strong>Code evidence:</strong> files are embedded and indexed in a vector database, so the code model can retrieve the semantically relevant snippets instead of reading a whole repository.</li>
+<li><strong>Visual evidence:</strong> a headless browser captures screenshots of the README and any rendered frontend, and stores them in object storage. The queue carries references, not the images.</li>
+</ul>
+
+<h3>3. Buffering and dispatch</h3>
+<p>Evidence bundles are published to partitioned Kafka topics. Keying by repository keeps events for one repository ordered, the log absorbs traffic spikes, and ingestion is decoupled from inference. Redis job queues then hand work to worker pods with low latency. Kafka is the durable buffer; Redis is the fast dispatcher.</p>
+
+<h3>4. Three models, three jobs</h3>
+<p>Instead of one large model doing everything, each model has one narrow job and produces structured output:</p>
+<div class="table-wrap"><table>
+<tr><th>Model</th><th>Reads</th><th>Looks for</th></tr>
+<tr><td>Vision (7B)</td><td>Screenshots from object storage</td><td>Logo misuse, cloned UIs, tokens visible in images</td></tr>
+<tr><td>Code (24B)</td><td>Retrieved snippets from the vector index</td><td>Hardcoded secrets, proprietary endpoints, internal logic</td></tr>
+<tr><td>Judge (7B)</td><td>The two structured verdicts</td><td>Agreement, conflict, and a final confidence score</td></tr>
+</table></div>
+<p>The judge never sees raw evidence. It adjudicates between two independent opinions, which keeps it cheap and makes its decisions easy to audit.</p>
+
+<h3>5. State and scaling</h3>
+<p>PostgreSQL stores incident state, repository and commit identifiers, classification output and the audit trail. A (repository, commit) key lets the system check what it has already reported before it alerts. Worker pods run on Kubernetes with a Horizontal Pod Autoscaler driven by <strong>queue depth and Kafka lag</strong>, not CPU. Backlog is the signal that matters, because CPU stays low while a queue grows.</p>
+
+<h2>Failure modes</h2>
+<div class="callout"><p>This table is my reasoning about the design, not an incident log.</p></div>
+<div class="table-wrap"><table>
+<tr><th>Failure</th><th>Effect</th><th>Mitigation</th></tr>
+<tr><td>Burst of new repositories</td><td>Queues grow</td><td>Kafka absorbs it; autoscaler adds workers on lag; the prefilter bounds inflow.</td></tr>
+<tr><td>Worker dies mid-job</td><td>Job could be lost</td><td>Keep the job queued until acknowledged and make writes idempotent on (repository, commit).</td></tr>
+<tr><td>Same repository seen repeatedly</td><td>Duplicate alerts</td><td>State table is checked before any alert is sent.</td></tr>
+<tr><td>Vision and code models disagree</td><td>Ambiguous verdict</td><td>The judge weighs both; low confidence stays under the alert threshold.</td></tr>
+<tr><td>Model endpoint slows down</td><td>Latency rises</td><td>Backpressure shows up as queue depth, which the autoscaler reacts to, instead of upstream timeouts.</td></tr>
+</table></div>
+
+<h2>Trade-offs</h2>
+<ul>
+<li><strong>Precision over recall.</strong> The prefilter can miss things, and the reported number measures precision only. I make no recall claim.</li>
+<li><strong>Latency for accuracy.</strong> Three model calls plus a judge take longer than one call. The stages are asynchronous, so the cost is delay, not throughput.</li>
+<li><strong>Cheap filter, brittle filter.</strong> Keyword matching is easy to evade; its value is cost control, not security.</li>
+</ul>
+
+<h2>Result</h2>
+<p>In production this design reached over 95% precision on newly leaked repositories. That figure is my team's internal measurement, not a published benchmark.</p>
+
+<h2>Technology stack</h2>
+<div class="table-wrap"><table>
+<tr><th>Layer</th><th>Technology</th></tr>
+<tr><td>Discovery and filtering</td><td>Monitoring agents, keyword preprocessing</td></tr>
+<tr><td>Semantic retrieval</td><td>Dense code embeddings, Qdrant</td></tr>
+<tr><td>Visual evidence</td><td>Headless browser, S3-compatible object storage</td></tr>
+<tr><td>Streaming and queuing</td><td>Apache Kafka, Redis</td></tr>
+<tr><td>Verification</td><td>Qwen 7B (vision), Mistral 24B (code), Mistral 7B (judge)</td></tr>
+<tr><td>State and audit</td><td>PostgreSQL</td></tr>
+<tr><td>Orchestration</td><td>Kubernetes with HPA</td></tr>
+</table></div>
+</article>
+      <nav class="post-nav" aria-label="More posts"><span></span><a class="next" href="control-plane-vs-data-plane.html"><small>Next</small>Control plane vs data plane: the first split in a video platform</a></nav>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general system-design material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <script src="../js/blog.js" defer></script>
+</body>
+</html>

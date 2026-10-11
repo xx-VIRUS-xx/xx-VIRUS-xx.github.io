@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The math behind a deterministic agent memory | Prabhat Saxena</title>
+  <meta name="description" content="How an external memory for LLM agents finds connections, orders history in time and picks what to show the model, using only arithmetic.">
+  <meta name="theme-color" content="#07100d">
+  <link rel="canonical" href="https://xx-virus-xx.github.io/blog/deterministic-agent-memory-math.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The math behind a deterministic agent memory | Prabhat Saxena">
+  <meta property="og:description" content="How an external memory for LLM agents finds connections, orders history in time and picks what to show the model, using only arithmetic.">
+  <meta property="og:url" content="https://xx-virus-xx.github.io/blog/deterministic-agent-memory-math.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"The math behind a deterministic agent memory","author":{"@type":"Person","name":"Prabhat Saxena","url":"https://xx-virus-xx.github.io/"},"datePublished":"2026-10","url":"https://xx-virus-xx.github.io/blog/deterministic-agent-memory-math.html"}</script>
+</head>
+<body style="--c1:#fb7185;--c2:#e879f9;--glow-a:#fb7185;--glow-b:#e879f9">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <header class="nav over solid">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="../">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../#projects">Projects</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="post">
+    <div class="post-wrap">
+      <a class="back" href="./">&larr; All posts</a>
+      <ul class="tags"><li>Agent memory</li><li>Retrieval</li><li>Math</li></ul>
+      <h1>The math behind a deterministic agent memory</h1>
+      <p class="dek">An LLM lists what each turn mentions. After that, memory is counting: one table, a few matrix products and no learned weights.</p>
+      <p class="byline">Prabhat Saxena · October 2026 · 8 min read</p>
+      <article class="prose">
+<p>I built <a href="https://github.com/xx-VIRUS-xx/N-Dimensional-Memory">N-Dimensional Memory</a> (NDM) as an external memory for LLM agents. This post explains the math inside it. The math is counting and nothing fancier: it counts which events mention which things, then uses those counts to find connections, order history, spot unclear references and choose what to show the model. There is no neural network and no learned weights, so the same input always produces the same output.</p>
+
+<h2>System view</h2>
+<figure class="diagram"><svg viewBox="0 0 960 610" role="img" aria-label="Deterministic memory engine: an LLM lists entities per turn, everything after is counting" xmlns="http://www.w3.org/2000/svg"><title>Deterministic memory engine: an LLM lists entities per turn, everything after is counting</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="30" y="24" width="190" height="58" rx="10" class="d-box"/><text x="125.0" y="50.0" text-anchor="middle" class="d-label">Dialogue turns</text><text x="125.0" y="69.0" text-anchor="middle" class="d-sub">who said what, when</text><rect x="270" y="24" width="250" height="58" rx="10" class="d-box hot"/><text x="395.0" y="50.0" text-anchor="middle" class="d-label">LLM reads each turn alone</text><text x="395.0" y="69.0" text-anchor="middle" class="d-sub">lists entities (the only model call)</text><path d="M220 53 L270 53" class="d-arrow" marker-end="url(#ar)"/><rect x="30" y="128" width="900" height="372" rx="16" class="d-group dashed"/><text x="46" y="152" class="d-glabel">DETERMINISTIC ENGINE · counting only, no learned weights, same input → same output</text><path d="M395 82 L395 112 L170 112 L170 180" class="d-arrow" marker-end="url(#ar)"/><text x="280" y="106" text-anchor="middle" class="d-note">entity lists</text><rect x="55" y="180" width="230" height="70" rx="10" class="d-box hot"/><text x="170.0" y="212.0" text-anchor="middle" class="d-label">Incidence matrix B</text><text x="170.0" y="231.0" text-anchor="middle" class="d-sub">entity × event, 0 or 1</text><rect x="345" y="160" width="260" height="52" rx="10" class="d-box"/><text x="475.0" y="183.0" text-anchor="middle" class="d-label">BᵀB → collisions</text><text x="475.0" y="202.0" text-anchor="middle" class="d-sub">which events share entities</text><path d="M285 215 L315 215 L315 186 L345 186" class="d-arrow" marker-end="url(#ar)"/><path d="M605 186 L645 186 L645 301" class="d-arrow"/><rect x="345" y="226" width="260" height="52" rx="10" class="d-box"/><text x="475.0" y="249.0" text-anchor="middle" class="d-label">BBᵀ → weighted ties</text><text x="475.0" y="268.0" text-anchor="middle" class="d-sub">shared events ÷ ln(1 + event size)</text><path d="M285 215 L315 215 L315 252 L345 252" class="d-arrow" marker-end="url(#ar)"/><path d="M605 252 L645 252 L645 301" class="d-arrow"/><rect x="345" y="292" width="260" height="52" rx="10" class="d-box"/><text x="475.0" y="315.0" text-anchor="middle" class="d-label">Row of B → trajectory</text><text x="475.0" y="334.0" text-anchor="middle" class="d-sub">ordered history, tick + date clocks</text><path d="M285 215 L315 215 L315 318 L345 318" class="d-arrow" marker-end="url(#ar)"/><path d="M605 318 L645 318 L645 301" class="d-arrow"/><rect x="345" y="358" width="260" height="52" rx="10" class="d-box"/><text x="475.0" y="381.0" text-anchor="middle" class="d-label">Candidate count → resolve</text><text x="475.0" y="400.0" text-anchor="middle" class="d-sub">0 unknown · 1 fill in · 2+ stay open</text><path d="M285 215 L315 215 L315 384 L345 384" class="d-arrow" marker-end="url(#ar)"/><path d="M605 384 L645 384 L645 301" class="d-arrow"/><rect x="660" y="268" width="250" height="66" rx="10" class="d-box"/><text x="785.0" y="298.0" text-anchor="middle" class="d-label">Score events for a question</text><text x="785.0" y="317.0" text-anchor="middle" class="d-sub">3·entities + words + 0.5·speakers</text><path d="M645 301 L660 301" class="d-arrow" marker-end="url(#ar)"/><rect x="660" y="372" width="250" height="66" rx="10" class="d-box hot"/><text x="785.0" y="402.0" text-anchor="middle" class="d-label">Depiction</text><text x="785.0" y="421.0" text-anchor="middle" class="d-sub">top events + prior turn · date order</text><path d="M785 334 L785 372" class="d-arrow" marker-end="url(#ar)"/><rect x="660" y="534" width="250" height="56" rx="10" class="d-box"/><text x="785.0" y="559.0" text-anchor="middle" class="d-label">Answering LLM</text><text x="785.0" y="578.0" text-anchor="middle" class="d-sub">reads a few attributed lines</text><path d="M785 438 L785 534" class="d-arrow" marker-end="url(#ar)"/><text x="855" y="490" text-anchor="middle" class="d-note">~570 words, not ~1,730</text></svg><figcaption>The language model is used at the edges only. Between extraction and answering, memory is arithmetic on one table.</figcaption></figure>
+<p>The language model reads each turn on its own and lists the entities it mentions. From there on the model is not needed until the final answer. Everything in between is arithmetic on those lists.</p>
+
+<h2>One tiny conversation</h2>
+<p>Every step below uses the same four turns between Alice and Bob:</p>
+<div class="table-wrap"><table>
+<tr><th>Turn</th><th>Date</th><th>Speaker</th><th>What was said</th></tr>
+<tr><td>t0</td><td>1 May</td><td>Alice</td><td>I started a pottery class.</td></tr>
+<tr><td>t1</td><td>1 May</td><td>Bob</td><td>My pottery teacher is Carla.</td></tr>
+<tr><td>t2</td><td>8 May</td><td>Alice</td><td>Carla said my vase was lovely.</td></tr>
+<tr><td>t3</td><td>9 May</td><td>Bob</td><td>I sold my bike.</td></tr>
+</table></div>
+
+<h2>Step 1: one table</h2>
+<p>Write each entity as a row and each turn (event) as a column, with a 1 wherever the entity appears. This is the incidence matrix <strong>B</strong>, and it is the only thing the engine computes on.</p>
+<div class="formula">B[i][k] = 1 if entity i appears in event k, otherwise 0</div>
+<div class="table-wrap"><table>
+<tr><th>Entity</th><th class="num">t0</th><th class="num">t1</th><th class="num">t2</th><th class="num">t3</th></tr>
+<tr><td>Alice</td><td class="num on">1</td><td class="num">0</td><td class="num on">1</td><td class="num">0</td></tr>
+<tr><td>Bob</td><td class="num">0</td><td class="num on">1</td><td class="num">0</td><td class="num on">1</td></tr>
+<tr><td>pottery</td><td class="num on">1</td><td class="num on">1</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>Carla</td><td class="num">0</td><td class="num on">1</td><td class="num on">1</td><td class="num">0</td></tr>
+<tr><td>vase</td><td class="num">0</td><td class="num">0</td><td class="num on">1</td><td class="num">0</td></tr>
+<tr><td>bike</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num on">1</td></tr>
+</table></div>
+<p>Read along a row to see where an entity shows up; read down a column to see what one event involves. Two rules keep the table trustworthy. Each event gets its own column, so facts from different turns cannot blur together. Names are normalised before they become rows, so "the vase" and "vase" share a row, while "my vase" said by Alice and "my vase" said by Bob do not.</p>
+
+<h2>Step 2: which events connect</h2>
+<p>Two events collide when they mention the same entity. Counting shared entities for every pair of events is one matrix product:</p>
+<div class="formula">(BᵀB)[k][l] = number of entities that events k and l share</div>
+<p>Speakers are excluded from this count. In a two-person chat they appear in almost every turn, so counting them would connect everything to everything. They are hubs, and hubs carry no signal.</p>
+<div class="table-wrap"><table>
+<tr><th></th><th class="num">t0</th><th class="num">t1</th><th class="num">t2</th><th class="num">t3</th></tr>
+<tr><td>t0</td><td class="num">—</td><td class="num on">1 (pottery)</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>t1</td><td class="num on">1 (pottery)</td><td class="num">—</td><td class="num on">1 (Carla)</td><td class="num">0</td></tr>
+<tr><td>t2</td><td class="num">0</td><td class="num on">1 (Carla)</td><td class="num">—</td><td class="num">0</td></tr>
+<tr><td>t3</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">—</td></tr>
+</table></div>
+<p>The chain t0 → t1 → t2 is one connected story: a pottery class, the teacher, the teacher praising a vase. Nobody said so in one sentence; the link comes only from shared entities. The bike (t3) connects to nothing. The math says <em>that</em> events connect, never <em>what the connection means</em>. Whether Carla also teaches Alice is not stated, so the engine does not claim it.</p>
+
+<h2>Step 3: how strongly two entities are tied</h2>
+<p>Flip the question: count the events two entities share. It is the same product the other way round:</p>
+<div class="formula">(BBᵀ)[i][j] = number of events in which entities i and j both appear</div>
+<p>Not every shared event counts equally. An event that mentions two things says a lot about how they relate; an event that mentions twenty says little about any one pair. So each shared event is weighted down by how crowded it is (Adamic–Adar weighting):</p>
+<div class="formula">w(i, j) = Σₖ  B[i][k] · B[j][k] / ln(1 + entities in event k)</div>
+<div class="table-wrap"><table>
+<tr><th>Event mentions</th><th>Weight of one shared event</th></tr>
+<tr><td>2 entities</td><td>1 ÷ ln 3 = 0.91</td></tr>
+<tr><td>3 entities (t1 and t2 here)</td><td>1 ÷ ln 4 = 0.72</td></tr>
+<tr><td>6 entities</td><td>1 ÷ ln 7 = 0.51</td></tr>
+<tr><td>20 entities</td><td>1 ÷ ln 21 = 0.33</td></tr>
+</table></div>
+<p>It is a similarity score, not a distance: a higher number means more closely tied in this conversation, nothing more.</p>
+
+<h2>Step 4: history in order, with two clocks</h2>
+<p>An entity's trajectory is its row of B read in time order. Carla's is t1 (1 May, introduced as Bob's teacher), then t2 (8 May, praised Alice's vase). Every event carries two clocks:</p>
+<div class="table-wrap"><table>
+<tr><th>Clock</th><th>What it means</th><th>Answers</th></tr>
+<tr><td>Tick (t0, t1, …)</td><td>The order the engine heard things; also each event's unique ID</td><td>"What did we know by then?"</td></tr>
+<tr><td>Date</td><td>When the turn was said; the anchor for words like "yesterday"</td><td>"When did it happen?"</td></tr>
+</table></div>
+<p>The clocks can disagree. If Bob says on 9 May, "Last month I sold my bike", the event gets the newest tick (t3) but its date anchor is 9 May, so "last month" means April. This mattered in practice: an early version stored ticks but not dates and answered 1 of 7 time questions on a real benchmark conversation. With dates added it answered 5 of 5 on a new conversation. Those are small samples, so read them as a design signal, not a measurement.</p>
+
+<h2>Step 5: unclear words become a count</h2>
+<p>Suppose a fifth turn arrives on 10 May: Alice says, "She said it was my best work." The model reading that sentence alone cannot know who "she" is or what "it" is, so it marks both unresolved. The engine counts the candidates in the last three events:</p>
+<div class="table-wrap"><table>
+<tr><th>Word</th><th>Looking for</th><th>Candidates (t2–t4)</th><th class="num">Count</th><th>What happens</th></tr>
+<tr><td>she</td><td>a person other than the speaker</td><td>Carla</td><td class="num">1</td><td>Filled in as Carla with a note citing t2; a later correction can undo it</td></tr>
+<tr><td>it</td><td>a thing</td><td>vase, bike</td><td class="num">2</td><td>Stays open: memory shows “it = vase or bike?” instead of guessing</td></tr>
+</table></div>
+<p>The whole rule is a count: one candidate fills it in and records the evidence; two or more keep the question open until someone says which; zero records it as unknown. A guess never becomes a fact unless the count is unambiguous or a person states the answer.</p>
+
+<h2>Step 6: what to show the model</h2>
+<p>When a question arrives, the engine scores every event and shows the model only the best ones, in date order, within a word budget:</p>
+<div class="formula">score = 3 × (non-speaker entities from the question in the event)
+      +     (question words in the event)
+      + 0.5 × (speakers from the question in the event)</div>
+<p>For “When was Alice's vase praised?”, the vase is a non-speaker entity and Alice is a speaker:</p>
+<div class="table-wrap"><table>
+<tr><th>Event</th><th class="num">Vase × 3</th><th class="num">Question words found</th><th class="num">Alice × 0.5</th><th class="num">Score</th></tr>
+<tr><td>t2</td><td class="num">3</td><td class="num">2 (vase, Alice)</td><td class="num">0.5</td><td class="num on">5.5</td></tr>
+<tr><td>t0</td><td class="num">0</td><td class="num">1 (Alice)</td><td class="num">0.5</td><td class="num on">1.5</td></tr>
+<tr><td>t1</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+<tr><td>t3</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td></tr>
+</table></div>
+<p>Then four fixed steps: keep the top events (t2, then t0); add the turn just before each kept event, because in dialogue an answer often depends on the line before it; sort by date, label who said each line, and cut the lowest scores first if over budget; hand the result to the model.</p>
+<div class="formula">[1 May] t0 Alice said: about Alice (themself): started a pottery class
+[1 May] t1 Bob said:   about Carla: Bob's pottery teacher
+[8 May] t2 Alice said: about Carla: said Alice's vase was lovely</div>
+<p>The model answers “8 May” from three lines instead of the whole conversation.</p>
+
+<h2>Step 7: measuring whether it works</h2>
+<p><strong>Stability.</strong> The model may word things differently each time it reads the same conversation, so two runs may build different connections. Compare the sets of colliding event pairs with the Jaccard index:</p>
+<div class="formula">J(A, B) = |A ∩ B| / |A ∪ B|</div>
+<p>If run A finds {t0–t1, t1–t2} and run B writes “pottery class” in t0 but “pottery” in t1, the t0–t1 link disappears and run B finds only {t1–t2}. J = 1 ÷ 2 = 0.5. On a real conversation the measured value was 0.22, which is how name drift was discovered and then fixed by normalising names (Step 1).</p>
+<p><strong>Accuracy.</strong> Benchmark questions (LoCoMo, with answers written by other researchers) are answered three ways, and every answer is read and scored by hand: correct = 1, partly correct = 0.5, wrong = 0.</p>
+<div class="table-wrap"><table>
+<tr><th>What the model read</th><th class="num">Score of 33</th><th class="num">Words per question</th></tr>
+<tr><td>Full conversation</td><td class="num">26</td><td class="num">1,734</td></tr>
+<tr><td>All of the engine's memory</td><td class="num">27</td><td class="num">4,080</td></tr>
+<tr><td>Depiction (Step 6)</td><td class="num on">24</td><td class="num on">571</td></tr>
+</table></div>
+<p>The two headline ratios are plain division: 24 ÷ 26 ≈ 92% of the accuracy, using 571 ÷ 1,734 ≈ 33% of the words.</p>
+
+<h2>What the math does not do</h2>
+<ul>
+<li><strong>It does not understand language.</strong> The model reads each sentence; the math only counts what the model listed.</li>
+<li><strong>It does not guess.</strong> Connections come from shared entities, and unclear words are filled in only when exactly one candidate exists.</li>
+<li><strong>It does not learn or drift.</strong> There are no trained weights or embeddings in the engine, so the same conversation always gives the same table, the same connections and the same depiction.</li>
+<li><strong>It does not prove meaning.</strong> A connection says two events share something; what it means is left to the model reading the depiction, with every line attributed to whoever said it.</li>
+</ul>
+
+<div class="callout"><p><strong>An honest caveat.</strong> At equal size this design only tied plain BM25 retrieval, so the project is documented and closed as a negative result. Its strengths showed up where retrieval is weakest, namely speaker attribution and dates. The sample sizes above are small. This post explains the mechanism, not a claim that it beats retrieval.</p></div>
+
+<h2>The method on one page</h2>
+<div class="table-wrap"><table>
+<tr><th class="num">Step</th><th>Math</th><th>Plain meaning</th></tr>
+<tr><td class="num">1</td><td>Incidence table B</td><td>Which entity appears in which event</td></tr>
+<tr><td class="num">2</td><td>BᵀB</td><td>Which events share entities (collisions)</td></tr>
+<tr><td class="num">3</td><td>BBᵀ, weighted by 1 ÷ ln(1 + event size)</td><td>How strongly two entities are tied</td></tr>
+<tr><td class="num">4</td><td>A row of B, sorted by date</td><td>An entity's history (trajectory)</td></tr>
+<tr><td class="num">5</td><td>Count candidates: 0, 1, 2+</td><td>Unknown, filled in, or left open</td></tr>
+<tr><td class="num">6</td><td>Score = 3·entities + words + 0.5·speakers</td><td>What to show the model for a question</td></tr>
+<tr><td class="num">7</td><td>Jaccard index; hand-scored accuracy ratios</td><td>Is it stable? Does it answer correctly?</td></tr>
+</table></div>
+</article>
+      <nav class="post-nav" aria-label="More posts"><a href="one-million-viewers-four-workloads.html"><small>Previous</small>“One million viewers” is four workloads</a><a class="next" href="./"><small>All posts</small>Back to the blog</a></nav>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general system-design material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <script src="../js/blog.js" defer></script>
+</body>
+</html>

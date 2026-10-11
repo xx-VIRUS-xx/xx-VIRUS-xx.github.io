@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>“One million viewers” is four workloads | Prabhat Saxena</title>
+  <meta name="description" content="Control, playback, events and processing grow differently. Scaling starts by asking which one is growing.">
+  <meta name="theme-color" content="#07100d">
+  <link rel="canonical" href="https://xx-virus-xx.github.io/blog/one-million-viewers-four-workloads.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="“One million viewers” is four workloads | Prabhat Saxena">
+  <meta property="og:description" content="Control, playback, events and processing grow differently. Scaling starts by asking which one is growing.">
+  <meta property="og:url" content="https://xx-virus-xx.github.io/blog/one-million-viewers-four-workloads.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"\u201cOne million viewers\u201d is four workloads","author":{"@type":"Person","name":"Prabhat Saxena","url":"https://xx-virus-xx.github.io/"},"datePublished":"2026-10","url":"https://xx-virus-xx.github.io/blog/one-million-viewers-four-workloads.html"}</script>
+</head>
+<body style="--c1:#fbbf24;--c2:#fb7185;--glow-a:#fbbf24;--glow-b:#fb7185">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <header class="nav over solid">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="../">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../#projects">Projects</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="post">
+    <div class="post-wrap">
+      <a class="back" href="./">&larr; All posts</a>
+      <ul class="tags"><li>System design</li><li>Capacity</li><li>Streaming</li></ul>
+      <h1>“One million viewers” is four workloads</h1>
+      <p class="dek">Why concurrent users are not the load on any single component, and how to decompose a live event into things you can actually scale.</p>
+      <p class="byline">Prabhat Saxena · October 2026 · 3 min read</p>
+      <article class="prose">
+<p>This continues <a href="control-plane-vs-data-plane.html">the control plane / data plane split</a>. The next question is what actually happens when a very large audience watches the same live event. My first instinct was "ten million times normal load". That instinct is wrong, and working out why was the most useful part of this exercise.</p>
+
+<h2>Load is not one number</h2>
+<figure class="diagram"><svg viewBox="0 0 1000 500" role="img" aria-label="Four workloads inside one million viewers" xmlns="http://www.w3.org/2000/svg"><title>Four workloads inside one million viewers</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="8" y="14" width="984" height="108" rx="16" class="d-group"/><rect x="20" y="36" width="170" height="64" rx="10" class="d-box hot"/><text x="105.0" y="65.0" text-anchor="middle" class="d-label">Control traffic</text><text x="105.0" y="84.0" text-anchor="middle" class="d-sub">scale: stateless servers</text><rect x="220" y="42" width="160" height="52" rx="10" class="d-box"/><text x="300.0" y="73.0" text-anchor="middle" class="d-label">Load balancer</text><rect x="415" y="42" width="160" height="52" rx="10" class="d-box"/><text x="495.0" y="73.0" text-anchor="middle" class="d-label">API servers ×N</text><path d="M380 68 L415 68" class="d-arrow" marker-end="url(#ar)"/><rect x="610" y="42" width="160" height="52" rx="10" class="d-box"/><text x="690.0" y="73.0" text-anchor="middle" class="d-label">Redis cache</text><path d="M575 68 L610 68" class="d-arrow" marker-end="url(#ar)"/><rect x="805" y="42" width="160" height="52" rx="10" class="d-box store"/><text x="885.0" y="73.0" text-anchor="middle" class="d-label">Database</text><path d="M770 68 L805 68" class="d-arrow" marker-end="url(#ar)"/><path d="M190 68 L220 68" class="d-arrow" marker-end="url(#ar)"/><rect x="8" y="136" width="984" height="108" rx="16" class="d-group"/><rect x="20" y="158" width="170" height="64" rx="10" class="d-box hot"/><text x="105.0" y="187.0" text-anchor="middle" class="d-label">Playback traffic</text><text x="105.0" y="206.0" text-anchor="middle" class="d-sub">scale: CDN + edge caches</text><rect x="220" y="164" width="160" height="52" rx="10" class="d-box"/><text x="300.0" y="195.0" text-anchor="middle" class="d-label">Player</text><rect x="415" y="164" width="160" height="52" rx="10" class="d-box"/><text x="495.0" y="195.0" text-anchor="middle" class="d-label">CDN edge</text><path d="M380 190 L415 190" class="d-arrow" marker-end="url(#ar)"/><rect x="610" y="164" width="160" height="52" rx="10" class="d-box"/><text x="690.0" y="195.0" text-anchor="middle" class="d-label">Origin (on miss)</text><path d="M575 190 L610 190" class="d-arrow" marker-end="url(#ar)"/><rect x="805" y="164" width="160" height="52" rx="10" class="d-box store"/><text x="885.0" y="195.0" text-anchor="middle" class="d-label">Object storage</text><path d="M770 190 L805 190" class="d-arrow" marker-end="url(#ar)"/><path d="M190 190 L220 190" class="d-arrow" marker-end="url(#ar)"/><rect x="8" y="258" width="984" height="108" rx="16" class="d-group"/><rect x="20" y="280" width="170" height="64" rx="10" class="d-box hot"/><text x="105.0" y="309.0" text-anchor="middle" class="d-label">Event traffic</text><text x="105.0" y="328.0" text-anchor="middle" class="d-sub">scale: stream + consumers</text><rect x="220" y="286" width="160" height="52" rx="10" class="d-box"/><text x="300.0" y="317.0" text-anchor="middle" class="d-label">Event API</text><rect x="415" y="286" width="160" height="52" rx="10" class="d-box"/><text x="495.0" y="317.0" text-anchor="middle" class="d-label">Kafka</text><path d="M380 312 L415 312" class="d-arrow" marker-end="url(#ar)"/><rect x="610" y="286" width="160" height="52" rx="10" class="d-box"/><text x="690.0" y="317.0" text-anchor="middle" class="d-label">Analytics pipeline</text><path d="M575 312 L610 312" class="d-arrow" marker-end="url(#ar)"/><rect x="805" y="286" width="160" height="52" rx="10" class="d-box"/><text x="885.0" y="317.0" text-anchor="middle" class="d-label">Recommendations</text><path d="M770 312 L805 312" class="d-arrow" marker-end="url(#ar)"/><path d="M190 312 L220 312" class="d-arrow" marker-end="url(#ar)"/><rect x="8" y="380" width="984" height="108" rx="16" class="d-group"/><rect x="20" y="402" width="170" height="64" rx="10" class="d-box hot"/><text x="105.0" y="431.0" text-anchor="middle" class="d-label">Content processing</text><text x="105.0" y="450.0" text-anchor="middle" class="d-sub">scale: queue + workers</text><rect x="220" y="408" width="160" height="52" rx="10" class="d-box"/><text x="300.0" y="439.0" text-anchor="middle" class="d-label">Upload</text><rect x="415" y="408" width="160" height="52" rx="10" class="d-box"/><text x="495.0" y="439.0" text-anchor="middle" class="d-label">Job queue</text><path d="M380 434 L415 434" class="d-arrow" marker-end="url(#ar)"/><rect x="610" y="408" width="160" height="52" rx="10" class="d-box"/><text x="690.0" y="439.0" text-anchor="middle" class="d-label">Transcode workers</text><path d="M575 434 L610 434" class="d-arrow" marker-end="url(#ar)"/><rect x="805" y="408" width="160" height="52" rx="10" class="d-box store"/><text x="885.0" y="439.0" text-anchor="middle" class="d-label">Segments</text><path d="M770 434 L805 434" class="d-arrow" marker-end="url(#ar)"/><path d="M190 434 L220 434" class="d-arrow" marker-end="url(#ar)"/></svg><figcaption>Same users, four different bottlenecks. Scaling starts by asking which lane is growing.</figcaption></figure>
+<p>The four lanes have different bottlenecks, different scaling tools and different performance requirements. Lumping them into "1M users" hides all the interesting engineering.</p>
+<div class="table-wrap"><table>
+<tr><th>Workload</th><th>Typical requests</th><th>Primary scaling tool</th></tr>
+<tr><td>Control traffic</td><td>Home, catalog, login, playback authorization</td><td>Stateless API servers and caches</td></tr>
+<tr><td>Playback traffic</td><td>Segment requests</td><td>CDN edge caches</td></tr>
+<tr><td>Event traffic</td><td>Pause, seek, skip, completion</td><td>Event stream and async consumers</td></tr>
+<tr><td>Content processing</td><td>Transcoding, segmentation, manifests</td><td>Queues and worker pools</td></tr>
+</table></div>
+
+<h2>1. Control traffic: the boring one</h2>
+<p>Small, cheap, mostly stateless requests behind a load balancer. Add API servers and the load spreads across them. A cache in front of the database serves repeated reads such as the home page, catalog metadata and profiles. This is a well-understood scaling problem, and it is not where the risk is.</p>
+
+<h2>2. Playback traffic: where the numbers get large</h2>
+<p>Back-of-envelope, assuming a player requests a new segment roughly every 4 seconds:</p>
+<div class="formula">15 requests/min × 1,000,000 viewers = 15,000,000 requests/min
+                                     ≈ 250,000 requests/second</div>
+<p>No origin server or database survives that without help, so almost none of these requests should reach the origin.</p>
+<div class="formula">viewer → CDN edge ─ hit  → served from cache
+                  └─ miss → origin → object storage</div>
+<p>For a popular title or a live match, everyone requests the same few segments at the same moment, so cache locality is extremely high. That is exactly what makes edge caching so effective. Popular segments sit at edges close to viewers, which improves latency and throughput and protects the origin: three benefits from one decision.</p>
+<h3>The live-streaming wrinkle</h3>
+<p>On-demand segments are immutable once generated, so they can be cached for a very long time. Live segments are produced continuously. Cache too aggressively and viewers see stale data. Cache too little and the origin is hit by everyone asking for "the latest segment" at once. For live content, freshness and cache effectiveness pull in opposite directions, and there is no universal answer, only a chosen trade-off.</p>
+
+<h2>3. Event traffic: never write it synchronously</h2>
+<p>Every pause, seek, skip and finished episode is a signal for analytics and recommendations. At scale none of it should be written synchronously to the primary database.</p>
+<div class="formula">client → event API → event stream ─┬→ analytics pipeline
+                                    └→ recommendation pipeline</div>
+<p>Decoupling ingestion (fast, append-only) from processing (batch or near real time) means a slow analytics job can never become the reason playback requests start failing.</p>
+
+<h2>4. Content processing: independent of audience size</h2>
+<p>Transcoding, segmentation and manifest generation run asynchronously through queues and worker pools. They do not depend on how many people are watching, so they get their own capacity plan and their own failure handling: retries, idempotent jobs, job status.</p>
+
+<h2>Same pattern, different layers</h2>
+<p>A cache in front of the database for hot application data and a CDN in front of object storage for video are the same pattern applied at two layers: put a cheap, fast, replaceable layer in front of the expensive, authoritative one.</p>
+
+<h2>Takeaway</h2>
+<div class="callout"><p>The number of concurrent users is not the load on any individual component. Decompose it into the workloads it generates. Each has a different bottleneck and a different scaling strategy, and for live content some constraints genuinely compete.</p></div>
+
+<h2>Still open</h2>
+<p>The hardest case is the one this post only names: everyone pressing play in the same few minutes, the thundering-herd problem for live events. I have not worked it through yet. Cache pre-warming, request coalescing and origin capacity planning are the topics I would start with.</p>
+<div class="callout"><p><strong>Limits of these notes.</strong> The numbers are back-of-envelope exercises, not measurements, and nothing here is validated against a production system.</p></div>
+</article>
+      <nav class="post-nav" aria-label="More posts"><a href="control-plane-vs-data-plane.html"><small>Previous</small>Control plane vs data plane: the first split in a video platform</a><a class="next" href="deterministic-agent-memory-math.html"><small>Next</small>The math behind a deterministic agent memory</a></nav>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general system-design material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <script src="../js/blog.js" defer></script>
+</body>
+</html>
