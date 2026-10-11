@@ -127,7 +127,8 @@
     })(h1, '');
     h1.textContent = '';
     out.forEach(function (n) { h1.appendChild(n); });
-    var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out' }, paused: !!window.__introActive });
+    if (window.__introActive) window.addEventListener('introdone', function () { tl.play(0); });
     tl.from('.eyebrow', { y: 20, opacity: 0, duration: 0.8 }, 0.1)
       .from('#hero-title .w > span', { yPercent: 115, duration: 1.1, stagger: 0.06 }, 0.2)
       .from('.lead', { y: 24, opacity: 0, duration: 0.9 }, 0.7)
