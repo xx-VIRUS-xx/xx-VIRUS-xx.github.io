@@ -10,7 +10,7 @@ On the first visit per browser session the home page plays `media/intro.webm` (w
 
 ## Blog
 
-`blog/` holds four system-design write-ups (static HTML with inline SVG architecture diagrams, styled by `css/blog.css`). They are written generically and do not name any employer or client.
+`blog/` holds system-design write-ups and one satirical dialogue (static HTML with inline SVG architecture diagrams, styled by `css/blog.css`). They are written generically and do not name any employer or client.
 
 ## Run locally
 

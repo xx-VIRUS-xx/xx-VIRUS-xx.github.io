@@ -73,3 +73,13 @@
 .post-card p { position: relative; color: #c1d0c9; margin: 0 0 14px; max-width: 60ch; }
 .post-card .meta { position: relative; color: var(--muted); font-size: 14px; margin: 0; }
 .post-card .tags { position: relative; margin: 0; }
+
+/* Chat-style post */
+.chat { display: grid; gap: 14px; margin: 2rem 0; }
+.msg { max-width: 88%; padding: 14px 18px 16px; border-radius: 20px; border: 1px solid var(--border); background: rgba(255, 255, 255, .05); }
+.msg p { margin: 0; color: #e6eee9; line-height: 1.65; }
+.msg .who { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.msg.me { justify-self: start; border-bottom-left-radius: 6px; }
+.msg.ai { justify-self: end; border-bottom-right-radius: 6px; background: color-mix(in srgb, var(--c1) 12%, transparent); border-color: color-mix(in srgb, var(--c1) 40%, transparent); }
+.msg.ai .who { color: var(--c1); }
+@media (max-width: 600px) { .msg { max-width: 96%; } }
