@@ -83,3 +83,6 @@
 .msg.ai { justify-self: end; border-bottom-right-radius: 6px; background: color-mix(in srgb, var(--c1) 12%, transparent); border-color: color-mix(in srgb, var(--c1) 40%, transparent); }
 .msg.ai .who { color: var(--c1); }
 @media (max-width: 600px) { .msg { max-width: 96%; } }
+
+.d-box.bad { fill: rgba(255, 106, 162, .2); stroke: #ff6aa2; }
+.d-box.good { fill: rgba(61, 232, 176, .2); stroke: #3de8b0; }

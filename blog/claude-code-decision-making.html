@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Claude Code helped me decide: one pass or two? | Prabhat Saxena</title>
+  <meta name="description" content="Is a second reading worth 2.3x the cost, and should it be the same model? How Claude Code turned the question into a measurable experiment.">
+  <meta name="theme-color" content="#07100d">
+  <link rel="canonical" href="https://latenightstack.com/blog/claude-code-decision-making.html">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How Claude Code helped me decide: one pass or two? | Prabhat Saxena">
+  <meta property="og:description" content="Is a second reading worth 2.3x the cost, and should it be the same model? How Claude Code turned the question into a measurable experiment.">
+  <meta property="og:url" content="https://latenightstack.com/blog/claude-code-decision-making.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"How Claude Code helped me decide: one pass or two?","author":{"@type":"Person","name":"Prabhat Saxena","url":"https://latenightstack.com/"},"datePublished":"2026-10","url":"https://latenightstack.com/blog/claude-code-decision-making.html"}</script>
+</head>
+<body style="--c1:#34d399;--c2:#38bdf8;--glow-a:#34d399;--glow-b:#38bdf8">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+  <header class="nav over solid">
+    <nav class="nav-inner" aria-label="Primary">
+      <a class="brand" href="../">Prabhat Saxena</a>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="./" class="active">Blog</a></li>
+        <li><a href="../#projects">Projects</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" class="post">
+    <div class="post-wrap">
+      <a class="back" href="./">&larr; All posts</a>
+      <ul class="tags"><li>Claude Code</li><li>Decision-making</li><li>LLM evals</li></ul>
+      <h1>How Claude Code helped me decide: one pass or two?</h1>
+      <p class="dek">A design question settled by experiment instead of opinion, and what different models each contributed to the answer.</p>
+      <p class="byline">Prabhat Saxena · October 2026 · 7 min read</p>
+      <article class="prose">
+<p>I was building an agent that reads receipts and has to say when it might be wrong. One design question kept coming back: <strong>is a second reading worth 2.3 times the cost, and should the second reader be the same model or a different one?</strong> Opinions on this are easy and cheap. I wanted a number. This post is how Claude Code helped me turn the question into an experiment, what the different models contributed, and where its help stopped and my judgment had to take over.</p>
+
+<h2>The decision</h2>
+<p>The agent reads each receipt, checks the arithmetic in plain code, and marks a row OK or REVIEW. A single reading can never earn an OK, because nothing independent checks it. A second reading can. So the real questions were:</p>
+<ol>
+<li>Does a second pass add accuracy, or only a trustworthy signal?</li>
+<li>If the same model reads twice, does it catch its own mistakes?</li>
+<li>Which model should do the reading, given price and speed?</li>
+</ol>
+
+<h2>Why opinion was not enough</h2>
+<p>Each side had a plausible argument. "A second look catches slips" sounds right. "The same model will repeat the same slip" also sounds right. Both can be true for different models, and I had no way to know which applied to mine without measuring it. Claude Code's first contribution was refusing to let me guess: it asked what the measurement would be, and what ground truth I had. I had none, so the plan had to include building it.</p>
+
+<h2>Making the experiment cheap enough to run</h2>
+<figure class="diagram"><svg viewBox="0 0 960 470" role="img" aria-label="Turning one design question into a measurable experiment" xmlns="http://www.w3.org/2000/svg"><title>Turning one design question into a measurable experiment</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="30" y="30" width="250" height="70" rx="10" class="d-box hot"/><text x="155.0" y="62.0" text-anchor="middle" class="d-label">The question</text><text x="155.0" y="81.0" text-anchor="middle" class="d-sub">one pass or two? same model or different?</text><rect x="330" y="30" width="280" height="70" rx="10" class="d-box"/><text x="470.0" y="62.0" text-anchor="middle" class="d-label">10 configurations</text><text x="470.0" y="81.0" text-anchor="middle" class="d-sub">4 single · 4 same-model two-pass · 2 mixed</text><rect x="660" y="30" width="270" height="70" rx="10" class="d-box"/><text x="795.0" y="62.0" text-anchor="middle" class="d-label">45 real receipts</text><text x="795.0" y="81.0" text-anchor="middle" class="d-sub">scored against labels</text><path d="M280 65 L330 65" class="d-arrow" marker-end="url(#ar)"/><path d="M610 65 L660 65" class="d-arrow" marker-end="url(#ar)"/><rect x="30" y="190" width="250" height="80" rx="10" class="d-box store"/><text x="155.0" y="227.0" text-anchor="middle" class="d-label">Cheap model access</text><text x="155.0" y="246.0" text-anchor="middle" class="d-sub">claude -p: $0.34 → $0.019 per call</text><rect x="330" y="190" width="280" height="80" rx="10" class="d-box"/><text x="470.0" y="227.0" text-anchor="middle" class="d-label">Same pipeline for every config</text><text x="470.0" y="246.0" text-anchor="middle" class="d-sub">read · check in code · re-read once · score</text><rect x="660" y="190" width="270" height="80" rx="10" class="d-box hot"/><text x="795.0" y="227.0" text-anchor="middle" class="d-label">Metrics that decide</text><text x="795.0" y="246.0" text-anchor="middle" class="d-sub">silent errors · error catch · AUROC · cost</text><path d="M280 230 L330 230" class="d-arrow" marker-end="url(#ar)"/><path d="M610 230 L660 230" class="d-arrow" marker-end="url(#ar)"/><path d="M470 100 L470 190" class="d-arrow" marker-end="url(#ar)"/><rect x="30" y="350" width="250" height="70" rx="10" class="d-box store"/><text x="155.0" y="382.0" text-anchor="middle" class="d-label">Frozen v1 baseline</text><text x="155.0" y="401.0" text-anchor="middle" class="d-sub">read before any fix; v2 labelled optimistic</text><rect x="330" y="350" width="280" height="70" rx="10" class="d-box store"/><text x="470.0" y="382.0" text-anchor="middle" class="d-label">Independent review</text><text x="470.0" y="401.0" text-anchor="middle" class="d-sub">a fresh session probes the claims</text><rect x="660" y="350" width="270" height="70" rx="10" class="d-box"/><text x="795.0" y="382.0" text-anchor="middle" class="d-label">Decision + what is not proven</text><text x="795.0" y="401.0" text-anchor="middle" class="d-sub">Sonnet twice · mix models if unsure</text><path d="M795 270 L795 350" class="d-arrow" marker-end="url(#ar)"/><path d="M280 385 L330 385" class="d-arrow" marker-end="url(#ar)"/><path d="M610 385 L660 385" class="d-arrow" marker-end="url(#ar)"/></svg><figcaption>Claude Code's job was to make the experiment cheap, honest and reviewable. The decision at the end is a number, not an opinion.</figcaption></figure>
+<p>The first real call through the headless Claude Code CLI cost $0.34 at list price, because each session carried about 38,000 tokens of tool and skill overhead. Claude Code probed the flags one by one, found that turning off MCP servers, slash commands and settings sources cut it to $0.019, a 17x reduction, and kept the session read-only. That one measurement is what made ten configurations over 45 receipts affordable: 451 model calls for $24.77 at list price, in roughly an hour, with no API key.</p>
+<p>The rest of the harness exists to keep me honest: labels written before any model ran, a v1 baseline frozen before I touched anything, and a stated warning that the later v2 numbers are optimistic because the fixes were chosen after seeing the same 45 receipts.</p>
+
+<h2>What the numbers said</h2>
+<div class="table-wrap"><table>
+<tr><th>Configuration</th><th class="num">Rows correct</th><th class="num">OK / flagged</th><th class="num">Wrong rows marked OK</th><th class="num">Cost per receipt</th></tr>
+<tr><td>Sonnet 5.5, single pass</td><td class="num">45 / 45</td><td class="num">0 / 45</td><td class="num">n/a</td><td class="num">$0.041</td></tr>
+<tr><td><strong>Sonnet 5.5, two passes (shipped)</strong></td><td class="num on">45 / 45</td><td class="num on">44 / 1</td><td class="num on">0</td><td class="num on">$0.094</td></tr>
+<tr><td>Opus 5.5, two passes</td><td class="num">45 / 45</td><td class="num">43 / 2</td><td class="num">0</td><td class="num">$0.096</td></tr>
+<tr><td>Haiku 5.5, same model twice</td><td class="num">44 / 45</td><td class="num">38 / 7</td><td class="num">1</td><td class="num">$0.167</td></tr>
+<tr><td>Haiku 5.5, then Sonnet 5.5</td><td class="num">44 / 45</td><td class="num">41 / 4</td><td class="num">0</td><td class="num">$0.136</td></tr>
+<tr><td>Haiku 4.5, same model twice</td><td class="num">37 / 45</td><td class="num">36 / 9</td><td class="num">4</td><td class="num">$0.136</td></tr>
+</table></div>
+<p>Costs are Claude Code list prices, not what the API would charge. "Wrong rows marked OK" is the number that matters most: those are the errors a human would never see.</p>
+
+<h2>How the different models helped</h2>
+<figure class="diagram"><svg viewBox="0 0 960 380" role="img" aria-label="A second reading by the same model versus a different model" xmlns="http://www.w3.org/2000/svg"><title>A second reading by the same model versus a different model</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head"/></marker><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="d-head2"/></marker></defs><rect x="8" y="10" width="944" height="170" rx="16" class="d-group"/><text x="24" y="34" class="d-glabel">SAME MODEL TWICE (Haiku 5.5)</text><rect x="24" y="62" width="170" height="70" rx="10" class="d-box"/><text x="109.0" y="94.0" text-anchor="middle" class="d-label">Receipt</text><text x="109.0" y="113.0" text-anchor="middle" class="d-sub">prints 13/03/2018</text><rect x="234" y="62" width="170" height="70" rx="10" class="d-box"/><text x="319.0" y="94.0" text-anchor="middle" class="d-label">Pass A</text><text x="319.0" y="113.0" text-anchor="middle" class="d-sub">reads year 2016</text><rect x="444" y="62" width="170" height="70" rx="10" class="d-box"/><text x="529.0" y="94.0" text-anchor="middle" class="d-label">Pass B</text><text x="529.0" y="113.0" text-anchor="middle" class="d-sub">reads year 2016</text><rect x="654" y="62" width="134" height="70" rx="10" class="d-box"/><text x="721.0" y="94.0" text-anchor="middle" class="d-label">Agree</text><text x="721.0" y="113.0" text-anchor="middle" class="d-sub">no flag</text><rect x="818" y="62" width="124" height="70" rx="10" class="d-box bad"/><text x="880.0" y="94.0" text-anchor="middle" class="d-label">OK 0.97</text><text x="880.0" y="113.0" text-anchor="middle" class="d-sub">wrong row</text><path d="M194 97 L234 97" class="d-arrow" marker-end="url(#ar)"/><path d="M404 97 L444 97" class="d-arrow" marker-end="url(#ar)"/><path d="M614 97 L654 97" class="d-arrow" marker-end="url(#ar)"/><path d="M788 97 L818 97" class="d-arrow" marker-end="url(#ar)"/><rect x="8" y="196" width="944" height="170" rx="16" class="d-group"/><text x="24" y="220" class="d-glabel">DIFFERENT MODEL SECOND (Haiku 5.5, then Sonnet 5.5)</text><rect x="24" y="248" width="170" height="70" rx="10" class="d-box"/><text x="109.0" y="280.0" text-anchor="middle" class="d-label">Receipt</text><text x="109.0" y="299.0" text-anchor="middle" class="d-sub">prints 13/03/2018</text><rect x="234" y="248" width="170" height="70" rx="10" class="d-box"/><text x="319.0" y="280.0" text-anchor="middle" class="d-label">Pass A (Haiku)</text><text x="319.0" y="299.0" text-anchor="middle" class="d-sub">reads year 2016</text><rect x="444" y="248" width="170" height="70" rx="10" class="d-box"/><text x="529.0" y="280.0" text-anchor="middle" class="d-label">Pass B (Sonnet)</text><text x="529.0" y="299.0" text-anchor="middle" class="d-sub">reads year 2018</text><rect x="654" y="248" width="134" height="70" rx="10" class="d-box"/><text x="721.0" y="280.0" text-anchor="middle" class="d-label">Disagree</text><text x="721.0" y="299.0" text-anchor="middle" class="d-sub">on date</text><rect x="818" y="248" width="124" height="70" rx="10" class="d-box good"/><text x="880.0" y="280.0" text-anchor="middle" class="d-label">REVIEW 0.55</text><text x="880.0" y="299.0" text-anchor="middle" class="d-sub">caught</text><path d="M194 283 L234 283" class="d-arrow" marker-end="url(#ar)"/><path d="M404 283 L444 283" class="d-arrow" marker-end="url(#ar)"/><path d="M614 283 L654 283" class="d-arrow" marker-end="url(#ar)"/><path d="M788 283 L818 283" class="d-arrow" marker-end="url(#ar)"/></svg><figcaption>Same model, same mistake, perfect agreement: agreement alone is not evidence. A different reader makes the disagreement possible.</figcaption></figure>
+<p>One receipt prints its date as 13/03/2018. Haiku 5.5 read the year as 2016, on both passes. The two passes agreed with each other, nothing flagged, and the row went out as OK at 0.97 confidence. When Sonnet did the second reading instead, it read 2018, the passes disagreed on the date, and the row dropped to REVIEW at 0.55. I opened the image to confirm: Sonnet was right.</p>
+<ul>
+<li><strong>A different second reader catches what the same model repeats.</strong> Agreement between two readings of the same model is weak evidence, because the same blind spot produces the same wrong answer twice.</li>
+<li><strong>A weaker model as the checker costs review time.</strong> With Sonnet first and Haiku second, 3 rows were flagged instead of 1: Haiku's own misread of that same year, and a day digit (26 or 28) that really is ambiguous.</li>
+<li><strong>A stronger model removed the need.</strong> Sonnet and Opus both got every row right with zero silent errors, so there was nothing for the second pass to catch. Opus cost the same, ran 3.6 seconds slower and flagged one more row.</li>
+<li><strong>A weaker model shows what the pass is for.</strong> Haiku 4.5 checking itself let four wrong rows through as OK.</li>
+</ul>
+<p>So I shipped Sonnet for both passes: the cheapest two-pass setup with the best measured result. For a strong model the second pass bought no accuracy. It bought the right to say OK. And I recommend a different model for the second pass whenever the primary is not clearly stronger than the data.</p>
+
+<h2>What Claude Code did, and what I did</h2>
+<div class="table-wrap"><table>
+<tr><th>Moment</th><th>Claude Code</th><th>Me</th></tr>
+<tr><td>Before any code</td><td>Attacked its own flowchart and found five gaps: no calibration, missing fields counted as passes, retries that could bend numbers, self-judged legibility, missing deliverables.</td><td>Asked for the critique and chose what to keep.</td></tr>
+<tr><td>Architecture</td><td>Argued a fixed pipeline with independent calls checked by code beats a multi-agent design for a fixed workflow.</td><td>Asked the question; accepted the answer after the reasoning held up.</td></tr>
+<tr><td>Experiment cost</td><td>Measured the overhead, found the 17x saving.</td><td>Decided to spend the hour and the money.</td></tr>
+<tr><td>Review</td><td>A separate session, with no memory of the build, wrote probe scripts and confirmed three real bugs before reporting them.</td><td>Chose to run an independent review, then fixed and re-tested.</td></tr>
+<tr><td>Corrections</td><td>Caught its own tally counting a missing date as a match (443 of 443) and restated it as 442 exact, 1 abstention, 0 contradictions.</td><td>Decided what to claim, and what not to.</td></tr>
+<tr><td>Scope, labels, publishing</td><td>Asked how long the work really took, and whether I had checked any labels.</td><td>Audited a random sample, recorded the real time, kept the exercise brief and the receipts out of the public repo.</td></tr>
+</table></div>
+<p>The split matters. Claude Code was strong at generating the alternatives, making the test cheap and finding holes. It had no stake in the answer, which helps, but it also reads the same family of labels as the systems it scored, so the labelling and the sign-off stayed mine.</p>
+
+<h2>Where this is thin</h2>
+<div class="callout"><p>The same-model finding rests on <strong>one receipt</strong> for the strong-ish model, plus four errors from a much weaker one. The labels were drafted by a Claude model and only sample-checked by me. All 45 receipts are Malaysian. The shipped configuration never made an error, so its ability to catch one is unmeasured; zero errors in 45 still allows a true error rate of about 6.4%.</p>
+<p>An independent audit of the repository re-derived every headline number from the per-row data and found no mismatch. It also found that one security claim in my docs was overstated; the audit report lists it with a fix.</p></div>
+
+<h2>A way to use this for your own decisions</h2>
+<ol>
+<li><strong>Write the decision as a question a number can answer.</strong> Not "is two passes better" but "how many wrong rows reach a human as OK".</li>
+<li><strong>Make the experiment cheap first.</strong> Measure the cost of a trial before running many. A 17x saving changes what you can afford to learn.</li>
+<li><strong>Let it attack your plan before you build.</strong> Five gaps in a flowchart cost nothing; five gaps in code cost a day.</li>
+<li><strong>Freeze a baseline.</strong> Fixes chosen after seeing results make the results look better than they are. Say so.</li>
+<li><strong>Use a second reader that does not share the first one's context.</strong> That is the whole lesson of the receipt above, applied to the review itself.</li>
+<li><strong>Write down what you did not prove.</strong> It is the part a reader trusts most.</li>
+</ol>
+<p>The code, the evaluation and the audit report are in the <a href="https://github.com/xx-VIRUS-xx/receipt-extraction-agent">receipt-extraction-agent repository</a>.</p>
+</article>
+      <nav class="post-nav" aria-label="More posts"><span></span><a class="next" href="leak-detection-pipeline.html"><small>Next</small>Detecting leaked code and brand abuse at scale</a></nav>
+    </div>
+  </main>
+  <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <script src="../js/blog.js" defer></script>
+</body>
+</html>
