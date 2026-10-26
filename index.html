@@ -15,6 +15,7 @@
   <meta name="twitter:card" content="summary">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/guestbook.css">
   <script>
     (function () {
       try {
@@ -51,6 +52,7 @@
       </video>
       <button class="intro-enter" type="button" aria-label="Enter the portfolio" disabled></button>
     </div>
+    <button class="intro-mark" type="button" data-gb-intro hidden>Leave your mark</button>
     <button class="intro-skip" type="button">Skip intro</button>
   </div>
 
@@ -71,6 +73,7 @@
         <li><a href="#skills">Skills</a></li>
         <li><a href="blog/">Blog</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><button type="button" class="nav-mark" data-gb-open hidden>Leave your mark</button></li>
       </ul>
     </nav>
   </header>
@@ -308,17 +311,62 @@
         </ul>
       </div>
     </section>
+    <section id="visitors" class="chapter visitors" hidden style="--c1:#8b7bff;--c2:#ff6aa2;--glow:#7c5cff">
+      <div class="container">
+        <p class="kicker"><b>&#9733;</b> Visitors</p>
+        <h2 class="big">Marks left <span class="grad">by visitors</span></h2>
+        <p class="note">Every print on this site, in the margins and here, belongs to someone who visited. <strong>They are not my work.</strong> Each is a drawn signature plus an ink print generated from it for fun. No real fingerprint is ever read. New marks appear after I approve them.</p>
+        <div class="wall" id="wall" aria-live="polite"></div>
+        <p class="note" id="wall-empty" hidden>No marks yet. Be the first.</p>
+        <p><button type="button" class="btn primary" data-gb-open>Leave your mark</button></p>
+      </div>
+    </section>
+
   </main>
+
+  <div class="marks-layer" id="marks-layer" aria-hidden="true"></div>
+  <div class="marks-pill" id="marks-pill" hidden>
+    <span>The prints in the margins are visitors', not my work.</span>
+    <button type="button" id="marks-hide">Hide</button>
+    <button type="button" id="marks-show" hidden>Show</button>
+  </div>
+
+  <dialog class="gb-dialog" id="gb-dialog" aria-labelledby="gb-title">
+    <div class="gb-inner">
+      <form id="gb-form" novalidate autocomplete="off">
+        <h2 id="gb-title">Leave your mark</h2>
+        <p class="gb-sub">Sign below and add your name. You get a generated ink print, and once I approve it, it joins the wall as a visitor's mark, not part of my work.</p>
+        <label class="gb-field"><span>Your name</span><input type="text" id="gb-name" maxlength="30" required placeholder="e.g. Asha"></label>
+        <div class="gb-field"><span>Sign here <em style="font-style:normal;opacity:.7">(mouse, finger or pen)</em></span>
+          <div class="gb-padwrap"><canvas class="gb-pad" id="gb-pad" aria-label="Signature pad"></canvas><span class="gb-padhint">draw your signature</span></div>
+        </div>
+        <div class="gb-tools"><button type="button" class="btn" id="gb-undo">Undo</button><button type="button" class="btn" id="gb-clear">Clear</button></div>
+        <div class="gb-preview" id="gb-preview" hidden><div class="gb-print" aria-hidden="true"></div><span>Your ink print. It is art made from your signature, not a real fingerprint.</span></div>
+        <label class="gb-field"><span>A short message (optional) <b id="gb-count" style="font-weight:600">0 / 140</b></span><textarea id="gb-message" maxlength="140" placeholder="No links, please."></textarea></label>
+        <div class="gb-trap" aria-hidden="true"><label>Website <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="gb-consent"><input type="checkbox" id="gb-consent"><span>I agree my name, message and drawing are stored and may be shown publicly on this site after approval. I can ask to have them removed.</span></label>
+        <p class="gb-fine">Stored: your name, message and drawing, plus a one-way hash of your IP address used only to limit spam. Nothing else, and no biometric data. To remove your mark, email pm10182000@gmail.com.</p>
+        <div class="gb-actions"><button type="submit" class="btn primary" id="gb-submit" disabled>Sign and stamp</button><button type="button" class="btn" id="gb-cancel">Not now</button><span class="gb-status" id="gb-msg" role="status"></span></div>
+      </form>
+      <div class="gb-done" id="gb-done" hidden>
+        <div class="gb-print" id="gb-done-print" aria-hidden="true"></div>
+        <h2>Stamped. Thank you.</h2>
+        <p class="gb-sub">Your mark is saved. You can see it now; everyone else will after I approve it.</p>
+      </div>
+    </div>
+  </dialog>
 
   <footer class="footer">
     <div class="container">
       <p>&copy; <span id="year">2026</span> Prabhat Saxena. Static site, <a href="https://github.com/xx-VIRUS-xx/xx-VIRUS-xx.github.io">source on GitHub</a>. <a href="?intro">Replay intro</a>.</p>
+      <p class="gb-footnote">Prints in the margins and in the Visitors section are left by visitors. They are not my work.</p>
     </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+  <script src="js/guestbook.js" defer></script>
   <script src="js/intro.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>

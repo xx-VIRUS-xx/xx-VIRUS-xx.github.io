@@ -33,10 +33,23 @@
     auto = setTimeout(finish, 1000);
   }
 
+  // Optional guestbook step: pausing the intro while the visitor signs, then entering on success.
+  var mark = box.querySelector('.intro-mark');
+  if (mark) mark.addEventListener('click', function () {
+    if (!window.Guestbook || done) return;
+    clearTimeout(auto); clearTimeout(watchdog); video.pause();
+    window.Guestbook.open().then(function (result) {
+      if (done) return;
+      if (result === 'submitted') { setTimeout(finish, 400); return; }
+      if (!video.ended) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+      else auto = setTimeout(finish, 1000);
+    });
+  });
+
   skip.addEventListener('click', finish);
   enter.addEventListener('click', finish);
   document.addEventListener('keydown', function (e) {
-    if (done) return;
+    if (done || document.querySelector('dialog[open]')) return;
     if (e.key === 'Escape' || ((e.key === 'Enter' || e.key === ' ') && ready && document.activeElement !== skip)) { e.preventDefault(); finish(); }
   });
 

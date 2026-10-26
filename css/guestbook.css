@@ -1,0 +1,77 @@
+/* Visitor marks: signature pad dialog, the wall, margin prints and the labels that say they are not mine */
+[hidden] { display: none !important; }
+
+.nav-mark, .intro-mark { font: inherit; cursor: pointer; }
+.nav-mark { background: none; border: 1px solid rgba(238, 243, 240, .35); color: #eef3f0; border-radius: 999px; padding: 4px 12px; font-size: 14px; white-space: nowrap; transition: border-color .2s, background .2s; }
+.nav-mark:hover { border-color: var(--mint); background: rgba(61, 232, 176, .12); }
+.intro-mark { position: absolute; right: 150px; top: 20px; z-index: 2; padding: 9px 16px; border-radius: 999px; font: 600 14px/1 system-ui, sans-serif; color: #04201c; background: var(--mint); border: 1px solid var(--mint); }
+.intro-mark:hover { background: #7bf5cf; }
+@media (max-width: 560px) { .intro-mark { right: 20px; top: 64px; } }
+
+/* Dialog */
+.gb-dialog { width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 0; border: 1px solid var(--border); border-radius: 24px; background: rgba(10, 20, 17, .96); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
+.gb-dialog::backdrop { background: rgba(2, 8, 6, .72); backdrop-filter: blur(6px); }
+.gb-inner { padding: 26px 26px 22px; }
+.gb-inner h2 { font-size: 1.6rem; letter-spacing: -.03em; margin: 0 0 6px; }
+.gb-inner .gb-sub { color: var(--muted); font-size: 15px; margin: 0 0 18px; }
+.gb-field { display: block; margin: 0 0 14px; }
+.gb-field > span { display: flex; justify-content: space-between; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.gb-field input[type=text], .gb-field textarea { width: 100%; font: inherit; font-size: 16px; color: var(--text); background: rgba(255, 255, 255, .06); border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; }
+.gb-field textarea { resize: vertical; min-height: 64px; }
+.gb-field input:focus, .gb-field textarea:focus { outline: 2px solid var(--mint); outline-offset: 1px; }
+.gb-padwrap { position: relative; border: 1px dashed rgba(238, 243, 240, .35); border-radius: 14px; background: rgba(255, 255, 255, .04); color: #eef3f0; }
+.gb-pad { display: block; width: 100%; aspect-ratio: 600 / 240; touch-action: none; cursor: crosshair; border-radius: 14px; }
+.gb-padhint { position: absolute; left: 14px; bottom: 8px; font-size: 12px; color: var(--muted); pointer-events: none; }
+.gb-tools { display: flex; gap: 8px; margin: 8px 0 14px; }
+.gb-tools .btn, .gb-actions .btn { padding: 9px 16px; font-size: 14px; border-radius: 12px; }
+.gb-preview { display: flex; align-items: center; gap: 14px; margin: 0 0 14px; padding: 10px 12px; border-radius: 14px; background: rgba(255, 255, 255, .04); border: 1px solid var(--border); font-size: 14px; color: var(--muted); }
+.gb-print { width: 76px; height: 76px; flex: 0 0 auto; }
+.gb-print svg { width: 100%; height: 100%; display: block; }
+.gb-print.stamp { animation: gb-stamp .6s cubic-bezier(.2, .8, .2, 1); }
+@keyframes gb-stamp { 0% { transform: scale(1.5) rotate(-8deg); opacity: 0; filter: blur(3px); } 60% { transform: scale(.94) rotate(2deg); opacity: 1; filter: none; } 100% { transform: none; } }
+.gb-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+.gb-consent input { margin-top: 3px; accent-color: var(--mint); }
+.gb-fine { font-size: 12px; color: var(--muted); margin: 0 0 14px; line-height: 1.5; }
+.gb-actions { display: flex; gap: 10px; align-items: center; }
+.gb-actions .btn[disabled] { opacity: .45; cursor: not-allowed; }
+.gb-status { margin: 0 0 0 auto; font-size: 13px; color: var(--muted); }
+.gb-status.is-bad { color: #ff9db8; }
+.gb-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.gb-done { text-align: center; padding: 18px 0 8px; }
+.gb-done .gb-print { width: 120px; height: 120px; margin: 0 auto 12px; animation: gb-stamp .7s cubic-bezier(.2, .8, .2, 1); }
+
+/* Cards (wall and margin pop-ups) */
+.gb-card { --ink: var(--mint); display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 18px; border: 1px solid var(--border); background: var(--surface); }
+.gb-card.is-pending { border-style: dashed; }
+.gb-card .gb-print { width: 64px; height: 64px; }
+.gb-body { min-width: 0; }
+.gb-sig { width: 130px; color: var(--text); opacity: .9; }
+.gb-sig svg { width: 100%; height: auto; display: block; }
+.gb-name { margin: 2px 0 0; font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
+.gb-msg { margin: 2px 0 0; color: #cdd9d3; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.gb-label { margin: 6px 0 0; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+
+.visitors { padding-bottom: 12vh; }
+.wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin: 28px 0 24px; }
+
+/* Margin marks on wide screens */
+.marks-layer { position: absolute; inset: 0 0 auto 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+.mark { position: absolute; pointer-events: auto; color: var(--ink); opacity: .55; transform: rotate(var(--rot, 0deg)); transition: opacity .25s, transform .35s cubic-bezier(.2, .8, .2, 1); }
+.mark-print { width: 100%; height: 100%; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--ink) 55%, transparent)); }
+.mark-print svg { width: 100%; height: 100%; display: block; }
+.mark:hover { opacity: 1; transform: rotate(0deg) scale(1.18); z-index: 4; }
+.mark > .gb-card { position: absolute; top: 50%; width: 300px; transform: translateY(-50%) scale(.96); opacity: 0; visibility: hidden; background: rgba(10, 20, 17, .96); backdrop-filter: blur(10px); box-shadow: 0 18px 50px rgba(0, 0, 0, .55); transition: opacity .2s, transform .25s; pointer-events: none; }
+.mark.is-left > .gb-card { left: calc(100% + 14px); }
+.mark.is-right > .gb-card { right: calc(100% + 14px); }
+.mark:hover > .gb-card { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
+html.marks-off .marks-layer { display: none; }
+
+.marks-pill { position: fixed; left: 14px; bottom: 14px; z-index: 60; display: flex; gap: 10px; align-items: center; max-width: 330px; padding: 8px 12px; border-radius: 14px; background: rgba(10, 20, 17, .88); border: 1px solid var(--border); backdrop-filter: blur(8px); font-size: 12px; line-height: 1.4; color: var(--muted); }
+.marks-pill button { font: inherit; font-size: 12px; font-weight: 700; color: var(--mint); background: none; border: 0; cursor: pointer; padding: 0; white-space: nowrap; }
+
+.footer .gb-footnote { margin-top: 8px; font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gb-print.stamp, .gb-done .gb-print { animation: none; }
+  .mark, .mark > .gb-card { transition: none; }
+}
