@@ -130,6 +130,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
     "INSERT INTO entries (id, name, message, strokes, seed, status, created_at, ip_hash) VALUES (?, ?, ?, ?, ?, 'pending', ?, ?)"
   ).bind(id, name, message, JSON.stringify(strokes), seed, now, ipHash).run();
 
+  console.log("notify check: topic", !!env.NTFY_TOPIC, "secret", !!env.MOD_SECRET);
   // Tell the owner (push notification with a signed review link). Never block or fail the visitor's request.
   const tell = notifyOwner(env, { id, name, message }).catch((e) => console.error("notify failed", String(e)));
   if (typeof waitUntil === "function") waitUntil(tell);
