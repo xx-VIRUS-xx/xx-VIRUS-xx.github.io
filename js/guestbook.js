@@ -279,15 +279,53 @@
         var prev = $('#gb-done-print'); prev.innerHTML = printSVG(seed); prev.style.setProperty('--ink', inkOf(seed));
         $('#gb-form').hidden = true; $('#gb-done').hidden = false;
         renderWall(); renderMargins(); syncButtons();
+        var cta = $('#gb-cta'); if (cta) cta.hidden = true;
         setTimeout(function () { if (dlg.open) dlg.close(); }, reduce ? 1800 : 2600);
       })
       .catch(function () { btn.disabled = false; setMsg('Could not reach the server. Please try again.', true); });
   }
 
+  function countText() {
+    var n = entries.length;
+    return n ? 'Join ' + (n >= 80 ? '80+' : n) + ' visitor' + (n > 1 ? 's' : '') + ' who left one' : 'Be the first visitor to sign';
+  }
+
   function syncButtons() {
     var signed = lsGet('gb:signed') === '1';
     $$('[data-gb-open]').forEach(function (b) { b.hidden = !available; });
+    $$('[data-gb-show]').forEach(function (b) { b.hidden = !available; });
+    $$('[data-gb-unsigned]').forEach(function (b) { b.hidden = !available || signed; });
     $$('[data-gb-intro]').forEach(function (b) { b.hidden = !available || signed; });
+    $$('[data-gb-count]').forEach(function (b) { b.textContent = countText(); });
+    var seed = entries.length ? entries[0].seed : 424242;
+    $$('.gb-cta-print').forEach(function (h) { h.innerHTML = printSVG(seed); h.style.setProperty('--ink', inkOf(seed)); });
+  }
+
+  // A floating invitation that appears after a short delay or once the visitor has scrolled a little.
+  function setupCta() {
+    var cta = $('#gb-cta');
+    if (!cta || !available || lsGet('gb:signed') === '1') return;
+    try { if (sessionStorage.getItem('gb:cta-closed') === '1') return; } catch (e) {}
+    var shown = false;
+    function show() {
+      if (shown || document.documentElement.classList.contains('intro-on') || (dlg && dlg.open)) return;
+      shown = true; cta.hidden = false;
+      requestAnimationFrame(function () { cta.classList.add('in'); });
+      window.removeEventListener('scroll', onScroll);
+    }
+    function onScroll() { if (window.scrollY > 320) show(); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    var tries = 0, t = setInterval(function () {
+      tries++;
+      if (!document.documentElement.classList.contains('intro-on') && tries >= 8) { clearInterval(t); show(); }
+      if (tries > 60) clearInterval(t);
+    }, 1000);
+    var x = $('#gb-cta-x');
+    if (x) x.addEventListener('click', function () {
+      cta.classList.remove('in'); setTimeout(function () { cta.hidden = true; }, 300);
+      try { sessionStorage.setItem('gb:cta-closed', '1'); } catch (e) {}
+    });
+    cta.addEventListener('click', function (e) { if (e.target.closest('.gb-cta-main')) cta.classList.remove('in'); });
   }
 
   function init() {
@@ -318,7 +356,7 @@
         available = true;
         entries = (j.entries || []).filter(function (e) { return e && Array.isArray(e.strokes) && typeof e.seed === 'number'; });
         window.dispatchEvent(new Event('guestbook:ready'));
-        syncButtons(); renderWall(); renderMargins();
+        syncButtons(); renderWall(); renderMargins(); setupCta();
       })
       .catch(function () { /* no backend here (for example the GitHub Pages copy): the feature stays hidden */ });
   }

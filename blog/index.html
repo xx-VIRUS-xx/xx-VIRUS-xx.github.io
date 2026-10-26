@@ -15,6 +15,7 @@
   <meta name="twitter:card" content="summary">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/blog.css">
+  <link rel="stylesheet" href="../css/guestbook.css">
   
 </head>
 <body style="--c1:#3de8b0;--c2:#f1e6a4;--glow-a:#3de8b0;--glow-b:#f1e6a4">
@@ -29,6 +30,7 @@
         <li><a href="./" class="active">Blog</a></li>
         <li><a href="../#projects">Projects</a></li>
         <li><a href="../#contact">Contact</a></li>
+        <li><button type="button" class="nav-mark" data-gb-open hidden><svg class="gb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 17c0-6 2-11 6-11s6 5 6 11"/><path d="M9 18c0-4 1-7 3-7s3 3 3 7"/><path d="M12 15v5"/><path d="M3.5 13C4 8 7.5 3 12 3s8 5 8.5 10"/></svg>Leave your mark</button></li>
       </ul>
     </nav>
   </header>
@@ -84,6 +86,46 @@
     </section>
   </main>
   <footer class="footer"><div class="container"><p>&copy; <span id="year">2026</span> Prabhat Saxena. These write-ups are general material and do not describe any employer's or client's internal systems.</p></div></footer>
+  <div class="marks-layer" id="marks-layer" aria-hidden="true"></div>
+  <div class="marks-pill" id="marks-pill" hidden>
+    <span>The prints in the margins are visitors', not my work.</span>
+    <button type="button" id="marks-hide">Hide</button>
+    <button type="button" id="marks-show" hidden>Show</button>
+  </div>
+
+  <div class="gb-cta" id="gb-cta" hidden role="complementary" aria-label="Guestbook invitation">
+    <button type="button" class="gb-cta-main" data-gb-open>
+      <span class="gb-cta-print" id="gb-cta-print" aria-hidden="true"></span>
+      <span class="gb-cta-text"><strong>Leave your mark</strong><small data-gb-count>Be the first visitor to sign</small></span>
+    </button>
+    <button type="button" class="gb-cta-x" id="gb-cta-x" aria-label="Dismiss">&times;</button>
+  </div>
+
+  <dialog class="gb-dialog" id="gb-dialog" aria-labelledby="gb-title" data-lenis-prevent>
+    <div class="gb-inner">
+      <form id="gb-form" novalidate autocomplete="off">
+        <h2 id="gb-title">Leave your mark</h2>
+        <p class="gb-sub">Sign below and add your name. You get a generated ink print, and once I approve it, it joins the wall as a visitor's mark, not part of my work.</p>
+        <label class="gb-field"><span>Your name</span><input type="text" id="gb-name" maxlength="30" required placeholder="e.g. Asha"></label>
+        <div class="gb-field"><span>Sign here <em style="font-style:normal;opacity:.7">(mouse, finger or pen)</em></span>
+          <div class="gb-padwrap"><canvas class="gb-pad" id="gb-pad" aria-label="Signature pad"></canvas><span class="gb-padhint">draw your signature</span></div>
+        </div>
+        <div class="gb-tools"><button type="button" class="btn" id="gb-undo">Undo</button><button type="button" class="btn" id="gb-clear">Clear</button></div>
+        <div class="gb-preview" id="gb-preview" hidden><div class="gb-print" aria-hidden="true"></div><span>Your ink print. It is art made from your signature, not a real fingerprint.</span></div>
+        <label class="gb-field"><span>A short message (optional) <b id="gb-count" style="font-weight:600">0 / 140</b></span><textarea id="gb-message" maxlength="140" placeholder="No links, please."></textarea></label>
+        <div class="gb-trap" aria-hidden="true"><label>Website <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="gb-consent"><input type="checkbox" id="gb-consent"><span>I agree my name, message and drawing are stored and may be shown publicly on this site after approval. I can ask to have them removed.</span></label>
+        <p class="gb-fine">Stored: your name, message and drawing, plus a one-way hash of your IP address used only to limit spam. A short notification with your name and message is sent to the site owner's phone through ntfy.sh so they can review it. Nothing else, and no biometric data. To remove your mark, email pm10182000@gmail.com.</p>
+        <div class="gb-actions"><button type="submit" class="btn primary" id="gb-submit" disabled>Sign and stamp</button><button type="button" class="btn" id="gb-cancel">Not now</button><span class="gb-status" id="gb-msg" role="status"></span></div>
+      </form>
+      <div class="gb-done" id="gb-done" hidden>
+        <div class="gb-print" id="gb-done-print" aria-hidden="true"></div>
+        <h2>Stamped. Thank you.</h2>
+        <p class="gb-sub">Your mark is saved. You can see it now; everyone else will after I approve it.</p>
+      </div>
+    </div>
+  </dialog>
+  <script src="../js/guestbook.js" defer></script>
   <script src="../js/blog.js" defer></script>
 </body>
 </html>
