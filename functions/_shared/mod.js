@@ -41,5 +41,5 @@ export async function notifyOwner(env, { id, name, message }) {
     },
     body: message ? `${name}: ${message}` : name,
   });
-  if (!res.ok) console.error("ntfy responded", res.status, (await res.text()).slice(0, 200));
+  if (!res.ok) console.error("ntfy responded", res.status, "token sent:", Boolean(env.NTFY_TOKEN), "token chars:", String(env.NTFY_TOKEN || "").length, (await res.text()).slice(0, 200));
 }
