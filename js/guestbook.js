@@ -230,12 +230,30 @@
     openedAt = Date.now();
     return new Promise(function (resolve) {
       resolver = resolve;
+      lockPage(true);
       if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
       setTimeout(function () { var n = $('#gb-name'); if (n) n.focus({ preventScroll: true }); }, 30);
     });
   }
 
+  // While the dialog is open the page behind it must not scroll. Smooth-scroll libraries listen for the wheel on the
+  // window, so wheel events that start outside the dialog are stopped before they get there. Events inside the dialog
+  // are left alone (it has data-lenis-prevent, so it scrolls natively). The page itself is not locked or restyled,
+  // which avoids the layout jump that overflow:hidden causes with pinned sections.
+  function blockOutsideWheel(e) {
+    if (!dlg || !dlg.open) return;
+    // The backdrop reports the dialog itself as the target, so test the pointer position as well.
+    var r = dlg.getBoundingClientRect();
+    var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!inside) { e.preventDefault(); e.stopPropagation(); }
+  }
+  function lockPage(on) {
+    var fn = on ? 'addEventListener' : 'removeEventListener';
+    document[fn]('wheel', blockOutsideWheel, { capture: true, passive: false });
+  }
+
   function onClose() {
+    lockPage(false);
     var r = resolver; resolver = null;
     if (r) r(submitted ? 'submitted' : 'cancelled');
   }

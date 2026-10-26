@@ -92,6 +92,7 @@
   var lenis = null;
   if (window.Lenis) {
     lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+    window.__lenis = lenis; // lets the guestbook dialog pause page scrolling while it is open
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
     gsap.ticker.lagSmoothing(0);

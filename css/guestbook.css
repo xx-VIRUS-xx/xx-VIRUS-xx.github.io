@@ -9,7 +9,7 @@
 @media (max-width: 560px) { .intro-mark { right: 20px; top: 64px; } }
 
 /* Dialog */
-.gb-dialog { width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 0; border: 1px solid var(--border); border-radius: 24px; background: rgba(10, 20, 17, .96); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
+.gb-dialog { overscroll-behavior: contain; width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 0; border: 1px solid var(--border); border-radius: 24px; background: rgba(10, 20, 17, .96); color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .6); }
 .gb-dialog::backdrop { background: rgba(2, 8, 6, .72); backdrop-filter: blur(6px); }
 .gb-inner { padding: 26px 26px 22px; }
 .gb-inner h2 { font-size: 1.6rem; letter-spacing: -.03em; margin: 0 0 6px; }
@@ -75,3 +75,4 @@ html.marks-off .marks-layer { display: none; }
   .gb-print.stamp, .gb-done .gb-print { animation: none; }
   .mark, .mark > .gb-card { transition: none; }
 }
+
