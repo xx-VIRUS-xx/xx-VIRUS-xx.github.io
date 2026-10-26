@@ -6,6 +6,7 @@
 #   ./scripts/guestbook.sh reject <id>          hide, keep the row
 #   ./scripts/guestbook.sh delete <id>          remove the row (for a removal request)
 set -euo pipefail
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"   # git hooks and some shells start with a minimal PATH
 export CLOUDFLARE_ACCOUNT_ID=cd47d2b7d59ab78d6ec10d49ad87b457
 DB=latenightstack-guestbook
 run() { npx --yes wrangler@4 d1 execute "$DB" --remote --command "$1" 2>&1 | sed 's/\x1b\[[0-9;]*m//g'; }

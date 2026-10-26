@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Deploy the site to Cloudflare Pages (project: latenightstack). Needs a prior `npx wrangler login`.
 set -euo pipefail
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"   # git hooks and some shells start with a minimal PATH
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 STAGE="$(mktemp -d)"
 trap 'rm -rf "${STAGE:?}"' EXIT
