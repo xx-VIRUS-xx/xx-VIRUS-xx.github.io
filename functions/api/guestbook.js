@@ -5,6 +5,8 @@
 // What is stored: a display name, an optional short message, the drawn signature as numbers, an art seed,
 // and a one-way hash of the IP (for rate limiting only). No fingerprints or other biometrics are read.
 
+import { notifyOwner } from "../_shared/mod.js";
+
 const PAD_W = 600;
 const PAD_H = 240;
 const MAX_BODY_BYTES = 40_000;
@@ -81,7 +83,7 @@ export async function onRequestGet({ env }) {
   return json({ entries }, 200, { "cache-control": "public, max-age=60" });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   if (!env.DB) return json({ error: "Guestbook is unavailable right now." }, 503);
 
   const origin = request.headers.get("origin") || "";
@@ -127,6 +129,10 @@ export async function onRequestPost({ request, env }) {
   await env.DB.prepare(
     "INSERT INTO entries (id, name, message, strokes, seed, status, created_at, ip_hash) VALUES (?, ?, ?, ?, ?, 'pending', ?, ?)"
   ).bind(id, name, message, JSON.stringify(strokes), seed, now, ipHash).run();
+
+  // Tell the owner (push notification with a signed review link). Never block or fail the visitor's request.
+  const tell = notifyOwner(env, { id, name, message }).catch(() => {});
+  if (typeof waitUntil === "function") waitUntil(tell);
 
   return json({ ok: true, id });
 }
