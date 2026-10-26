@@ -33,7 +33,12 @@ export async function notifyOwner(env, { id, name, message }) {
   const base = env.NTFY_BASE || "https://ntfy.sh";
   const res = await fetch(`${base}/${env.NTFY_TOPIC}`, {
     method: "POST",
-    headers: { Title: "New visitor mark", Tags: "writing_hand", Click: url, Actions: `view, Review, ${url}` },
+    headers: {
+      Title: "New visitor mark", Tags: "writing_hand", Click: url, Actions: `view, Review, ${url}`,
+      // An ntfy.sh account token gives this site its own message quota. Without it the shared Cloudflare egress IP
+      // can hit ntfy.sh's anonymous daily limit and the notification is dropped (the visitor is never affected).
+      ...(env.NTFY_TOKEN ? { Authorization: `Bearer ${env.NTFY_TOKEN}` } : {}),
+    },
     body: message ? `${name}: ${message}` : name,
   });
   if (!res.ok) console.error("ntfy responded", res.status, (await res.text()).slice(0, 200));
