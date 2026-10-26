@@ -131,7 +131,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   ).bind(id, name, message, JSON.stringify(strokes), seed, now, ipHash).run();
 
   // Tell the owner (push notification with a signed review link). Never block or fail the visitor's request.
-  const tell = notifyOwner(env, { id, name, message }).catch(() => {});
+  const tell = notifyOwner(env, { id, name, message }).catch((e) => console.error("notify failed", String(e)));
   if (typeof waitUntil === "function") waitUntil(tell);
 
   return json({ ok: true, id });

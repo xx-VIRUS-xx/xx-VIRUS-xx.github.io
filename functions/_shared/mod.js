@@ -31,9 +31,10 @@ export async function notifyOwner(env, { id, name, message }) {
   const token = await makeToken(env.MOD_SECRET, id, "review");
   const url = `${BASE}/api/review?id=${encodeURIComponent(id)}&t=${encodeURIComponent(token)}`;
   const base = env.NTFY_BASE || "https://ntfy.sh";
-  await fetch(`${base}/${env.NTFY_TOPIC}`, {
+  const res = await fetch(`${base}/${env.NTFY_TOPIC}`, {
     method: "POST",
     headers: { Title: "New visitor mark", Tags: "writing_hand", Click: url, Actions: `view, Review, ${url}` },
     body: message ? `${name}: ${message}` : name,
   });
+  if (!res.ok) console.error("ntfy responded", res.status, (await res.text()).slice(0, 200));
 }
